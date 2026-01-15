@@ -8,8 +8,6 @@ export default function Home() {
   return (
     <div className='min-h-screen'>
       <Header />
-      <Bio>
-      </Bio>
       <Hollander />
       <Rozanov />
       <Hunter />
