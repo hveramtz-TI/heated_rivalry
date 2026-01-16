@@ -38,7 +38,6 @@ const Header = () => {
       left: 0,
       right: 0,
       margin: "0 auto",
-      zIndex: 50,
     }, 0)
     .to(videoBgRef.current, {
       height: "100px",
@@ -64,7 +63,7 @@ const Header = () => {
   return (
     <header
       ref={headerRef}
-      className="fixed top-0 left-0 m-auto flex items-center justify-center min-w-screen h-screen overflow-hidden bg-black"
+      className="z-100 fixed top-0 left-0 m-auto flex items-center justify-center min-w-screen h-screen overflow-hidden bg-black"
     >
       <div ref={videoBgRef} className="absolute w-full h-full inset-0">
         <VideoBackground />

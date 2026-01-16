@@ -6,7 +6,7 @@ type Props = {};
 
 const Reproducer = (props: Props) => {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [playing, setPlaying] = useState(true);
+  const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
   const [pausedAt, setPausedAt] = useState<number | null>(null);
   // Actualizar el volumen del audio cuando cambie el estado volume
@@ -53,7 +53,7 @@ const Reproducer = (props: Props) => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col justify-center items-center gap-2">
+    <div className="fixed bottom-6 right-6 z-200 flex flex-col justify-center items-center gap-2">
       <button
         onClick={togglePlay}
         className="bg-black/80 hover:bg-black/90 border-1 border-yellow-100 text-white rounded-full p-4 shadow-lg flex items-center justify-center transition-colors duration-200"
