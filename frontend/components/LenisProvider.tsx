@@ -7,7 +7,6 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     const lenis = new Lenis({
       lerp: 0.1,
-      smooth: true,
     });
 
     function raf(time: number) {
