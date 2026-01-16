@@ -27,11 +27,6 @@ const Rozanov = (props: Props) => {
         end: "90% 55%",
         scrub: true,
         markers: false,
-        onLeaveBack: () => {
-          gsap.set([".shield-3", ".shield-4"], { opacity: 0, y: -40 });
-          gsap.set(".imageRozanov", { opacity: 0, x: '100%' });
-          gsap.set(".rozanov-description", { opacity: 0, y: -40 });
-        }
       }
     });
 

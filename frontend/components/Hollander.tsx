@@ -26,10 +26,6 @@ const Hollander = (props: Props) => {
         end: "90% 55%",
         scrub: true,
         markers: false,
-        onLeaveBack: () => {
-          gsap.set([".shield-hollander-1", ".shield-hollander-2"], { opacity: 0, y: -40 });
-          gsap.set(".imageHollander", { opacity: 0, x: '-100%' });
-        }
       }
     });
 
