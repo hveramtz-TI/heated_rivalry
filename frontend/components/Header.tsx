@@ -38,6 +38,7 @@ const Header = () => {
       left: 0,
       right: 0,
       margin: "0 auto",
+      zIndex: 50,
     }, 0)
     .to(videoBgRef.current, {
       height: "100px",
@@ -49,7 +50,7 @@ const Header = () => {
       duration: 0.2,
     }, 0)
     .to(".hollander", {
-        marginTop:"60vh",
+        marginTop:"55vh",
         ease: "power1.out",
     }, 0);
 

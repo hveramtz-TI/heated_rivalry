@@ -1,21 +1,47 @@
-import React from 'react'
+'use client'
+import React, { use } from 'react'
 import Bio from './Bio'
 import Image from 'next/image'
+import hollander from '@/public/hollander.png'
+import holladnerCard from '@/public/hollanderCard.png'
+import gsap from 'gsap'
+import { useEffect } from 'react'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 type Props = {}
 
 const Hollander = (props: Props) => {
+  gsap.registerPlugin(ScrollTrigger);
+  const tlhollander = gsap.timeline();
+
+  useEffect(() => {
+    tlhollander.to(".imageHollander", {
+      opacity: 1,
+      x: "-32%",
+      duration: 1,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ".hollander",
+        start: "20% top",
+        end: "bottom 50%",
+        scrub: true,
+        markers:false,
+      },
+    });
+  }, []);
+
+
   return (
-    <div className="hollander bg-white mt-screen">
+    <div className="hollander bg-gradient-to-tl from-[#FF002A] to-[#280408]  mt-screen">
       <Bio>
-        <div className="flex flex-col md:flex-row items-center justify-center min-h-screen md:gap-16 gap-8 p-4 md:p-12">
-          <div className="mb-6 md:mb-0 flex-shrink-0">
+        <div className="flex md:flex-row items-center justify-center min-h-screen">
+          <div className="flex-shrink-0">
             <Image
-              src="/hollander.png"
+              src={hollander}
               alt="Hollander"
-              width={400}
-              height={600}
-              className="rounded-lg shadow-lg w-full md:w-[400px] h-auto"
+              width={1500}
+              height={1500}
+              className="imageHollander w-screen md:w-[90vh] -translate-x-100 opacity-0"
             />
           </div>
           <div className="text-center md:text-left">
