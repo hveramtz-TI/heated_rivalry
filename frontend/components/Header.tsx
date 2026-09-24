@@ -47,10 +47,6 @@ const Header = () => {
       filter: "brightness(0) blur(0px)",
       ease: "none",
       duration: 0.2,
-    }, 0)
-    .to(".hollander", {
-        marginTop:"55vh",
-        ease: "power1.out",
     }, 0);
 
 
