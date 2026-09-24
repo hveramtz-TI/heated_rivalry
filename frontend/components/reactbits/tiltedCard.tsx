@@ -1,18 +1,36 @@
-import type { SpringOptions } from 'motion/react';
-import { useRef, useState } from 'react';
-import { motion, useMotionValue, useSpring } from 'motion/react';
+"use client";
+
+import Image from "next/image";
+import type { SpringOptions } from "motion/react";
+import { useRef, useState } from "react";
+import { motion, useMotionValue, useSpring } from "motion/react";
+import { MISSING_CONTENT_LABEL } from "@/data/ui";
+
+/**
+ * next/image wrapped by Motion (design D4): the art still participates in the
+ * tilt transform while the asset goes through the Next optimizer, so both
+ * `public/`-rooted art and allowlisted remote shields are policy-checked.
+ */
+const MotionImage = motion.create(Image);
 
 interface TiltedCardProps {
-  imageSrc: React.ComponentProps<'img'>['src'];
+  /** Card face; `undefined` renders the missing-content placeholder (no <img>). */
+  imageSrc?: string;
   altText?: string;
   captionText?: string;
-  containerHeight?: React.CSSProperties['height'];
-  containerWidth?: React.CSSProperties['width'];
-  imageHeight?: React.CSSProperties['height'];
-  imageWidth?: React.CSSProperties['width'];
+  containerHeight?: React.CSSProperties["height"];
+  containerWidth?: React.CSSProperties["width"];
+  /** Intrinsic art dimensions handed to next/image (defaults to a 3:4 ratio). */
+  imageHeight?: number;
+  imageWidth?: number;
+  /** Responsive sizes hint passed to next/image. */
+  imageSizes?: string;
+  loading?: "lazy" | "eager";
   scaleOnHover?: number;
   rotateAmplitude?: number;
   showMobileWarning?: boolean;
+  /** Localized notice copy; the notice renders only when this is provided. */
+  mobileWarningText?: string;
   showTooltip?: boolean;
   overlayContent?: React.ReactNode;
   displayOverlayContent?: boolean;
@@ -26,15 +44,18 @@ const springValues: SpringOptions = {
 
 export default function TiltedCard({
   imageSrc,
-  altText = 'Tilted card image',
-  captionText = '',
-  containerHeight = '300px',
-  containerWidth = '100%',
-  imageHeight = '300px',
-  imageWidth = '300px',
+  altText = "",
+  captionText = "",
+  containerHeight = "auto",
+  containerWidth = "100%",
+  imageHeight = 400,
+  imageWidth = 300,
+  imageSizes = "(min-width: 768px) 30vw, 90vw",
+  loading = "lazy",
   scaleOnHover = 1.1,
   rotateAmplitude = 14,
-  showMobileWarning = true,
+  showMobileWarning = false,
+  mobileWarningText,
   showTooltip = true,
   overlayContent = null,
   displayOverlayContent = false
@@ -91,7 +112,7 @@ export default function TiltedCard({
   return (
     <figure
       ref={ref}
-      className="relative w-full h-full [perspective:800px] flex flex-col items-center justify-center"
+      className="relative w-full [perspective:800px] flex flex-col items-center justify-center"
       style={{
         height: containerHeight,
         width: containerWidth
@@ -100,31 +121,35 @@ export default function TiltedCard({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {showMobileWarning && (
+      {showMobileWarning && mobileWarningText && (
         <div className="absolute top-4 text-center text-sm block sm:hidden">
-          This effect is not optimized for mobile. Check on desktop.
+          {mobileWarningText}
         </div>
       )}
 
       <motion.div
-        className="relative [transform-style:preserve-3d]"
+        className="relative w-full [transform-style:preserve-3d]"
         style={{
-          width: imageWidth,
-          height: imageHeight,
           rotateX,
           rotateY,
           scale
         }}
       >
-        <motion.img
-          src={imageSrc}
-          alt={altText}
-          className="absolute top-0 left-0 object-cover rounded-[15px] will-change-transform [transform:translateZ(0)]"
-          style={{
-            width: imageWidth,
-            height: imageHeight
-          }}
-        />
+        {imageSrc ? (
+          <MotionImage
+            src={imageSrc}
+            alt={altText}
+            width={imageWidth}
+            height={imageHeight}
+            sizes={imageSizes}
+            loading={loading}
+            className="w-full h-auto object-cover rounded-[15px] will-change-transform [transform:translateZ(0)]"
+          />
+        ) : (
+          <div className="w-full aspect-[3/4] flex items-center justify-center rounded-[15px] bg-black/40 px-4 text-center text-sm text-white/70">
+            {MISSING_CONTENT_LABEL}
+          </div>
+        )}
 
         {displayOverlayContent && overlayContent && (
           <motion.div className="absolute top-0 left-0 z-[2] will-change-transform [transform:translateZ(30px)]">
