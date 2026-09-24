@@ -1,0 +1,37 @@
+[
+  {
+    "id": "hollander",
+    "name": "Hollander",
+    "portrait": "/hollander.png",
+    "cardArt": "/hollanderCard.jpg",
+    "accent": "rivalryRed",
+    "shields": [
+      {
+        "src": "https://static.wikia.nocookie.net/game-changers-series/images/f/f9/Montreal_Metros_Logo.png/revision/latest?cb=20260102102951",
+        "alt": "Escudo del Montreal Metros"
+      },
+      {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Flag_of_Canada_%28Pantone%29.svg",
+        "alt": "Bandera de Canadá"
+      }
+    ]
+  },
+  {
+    "id": "rozanov",
+    "name": "Rozanov",
+    "portrait": "/rozanov.png",
+    "cardArt": "/rozanovCard.jpg",
+    "accent": "electricBlue",
+    "shields": [
+      {
+        "src": "https://static.wikia.nocookie.net/game-changers-series/images/a/a1/Boston_Raiders_Logo.png/revision/latest?cb=20260102134316",
+        "alt": "Escudo del Boston Raiders"
+      },
+      {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Russia.svg",
+        "alt": "Bandera de Rusia"
+      }
+    ]
+  },
+  { "id": "hunter", "name": "Hunter" }
+]
