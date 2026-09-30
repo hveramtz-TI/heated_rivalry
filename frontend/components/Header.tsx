@@ -9,9 +9,52 @@ const Header = () => {
   const videoBgRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLImageElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const navHidePendingRef = useRef(false);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
+
+    const setCompactNavVisible = (visible: boolean) => {
+      const nav = navRef.current;
+      if (!nav) return;
+
+      if (visible) {
+        navHidePendingRef.current = false;
+        nav.style.visibility = "visible";
+        nav.style.pointerEvents = "auto";
+        nav.inert = false;
+        nav.removeAttribute("aria-hidden");
+        return;
+      }
+
+      if (nav.contains(document.activeElement)) {
+        navHidePendingRef.current = true;
+        return;
+      }
+
+      navHidePendingRef.current = false;
+      nav.style.visibility = "hidden";
+      nav.style.pointerEvents = "none";
+      nav.inert = true;
+      nav.setAttribute("aria-hidden", "true");
+    };
+
+    const nav = navRef.current;
+    const handleNavFocusOut = (event: FocusEvent) => {
+      if (
+        event.relatedTarget instanceof Node &&
+        nav?.contains(event.relatedTarget)
+      ) {
+        return;
+      }
+
+      if (navHidePendingRef.current) {
+        queueMicrotask(() => setCompactNavVisible(false));
+      }
+    };
+
+    nav?.addEventListener("focusout", handleNavFocusOut);
 
     // 1) Define estado inicial para evitar saltos
     gsap.set(videoBgRef.current, { filter: "brightness(1) blur(0px)" });
@@ -22,6 +65,7 @@ const Header = () => {
         start: "1% top",
         end: "bottom 50%",
         scrub: true,
+        onUpdate: (self) => setCompactNavVisible(self.progress >= 0.999),
       },
     });
 
@@ -49,8 +93,12 @@ const Header = () => {
       duration: 0.2,
     }, 0);
 
+    setCompactNavVisible(
+      Boolean(tl.scrollTrigger && tl.scrollTrigger.progress >= 0.999),
+    );
 
     return () => {
+      nav?.removeEventListener("focusout", handleNavFocusOut);
       tl.scrollTrigger?.kill();
       tl.kill();
     };
@@ -65,14 +113,43 @@ const Header = () => {
         <VideoBackground />
       </div>
 
-      <Image
-        ref={logoRef}
-        src="/logo.png"
-        alt="Logo Heated Rivalry"
-        width={500}
-        height={500}
-        className="absolute"
-      />
+      <h1 className="absolute inset-0 m-0 flex items-center justify-center">
+        <Image
+          ref={logoRef}
+          src="/logo.png"
+          alt="Heated Rivalry"
+          width={500}
+          height={500}
+          className="absolute"
+        />
+      </h1>
+
+      <nav
+        ref={navRef}
+        aria-hidden="true"
+        aria-label="Navegación principal"
+        inert
+        className="invisible pointer-events-none absolute right-3 top-1/2 flex -translate-y-1/2 flex-col gap-1 text-[10px] font-semibold text-white sm:right-6 sm:flex-row sm:gap-4 sm:text-sm"
+      >
+        <a
+          className="rounded px-1 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-200"
+          href="#personajes"
+        >
+          Personajes
+        </a>
+        <a
+          className="rounded px-1 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-200"
+          href="#temporadas"
+        >
+          Temporadas
+        </a>
+        <a
+          className="rounded px-1 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-200"
+          href="#libros"
+        >
+          Libros
+        </a>
+      </nav>
     </header>
   );
 };
