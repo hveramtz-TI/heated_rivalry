@@ -28,7 +28,7 @@ The section links are currently only in the footer, the page has no main landmar
 ## Tasks
 
 - [x] UX1 — Add the skip link, visible page H1 around the existing brand mark, `<main>` around the three content sections, and accessible header navigation that becomes available after hero collapse. Preserve footer links. Verify focus, hidden-state tab order, anchor positioning/history, and focus retention while scrolling back to the hero.
-- [ ] UX2 — Simplify audio playback to one initial seek/play path; retain pause/resume position; catch rejected playback and media errors with visible status feedback; add explicit focus-visible styling and safe-area-aware fixed placement. Verify pointer and keyboard behavior at desktop and mobile widths.
+- [x] UX2 — Simplify audio playback to one initial seek/play path; retain pause/resume position; catch rejected playback and media errors with visible status feedback; add explicit focus-visible styling and safe-area-aware fixed placement. Verify pointer and keyboard behavior at desktop and mobile widths.
 
 ## Route
 
@@ -43,13 +43,13 @@ The section links are currently only in the footer, the page has no main landmar
 - Native anchor navigation preserves browser URL/history behavior and the fixed-header offset.
 - First explicit play starts at 5 seconds once; pause/resume returns to the stored position; no delayed seek occurs.
 - Playback rejection/error is visibly announced in Spanish; play and volume controls have visible keyboard focus; fixed controls respect safe areas and do not obscure essential content.
-- `npm run build` passes; `npm run lint` remains at the existing 2 errors / 3 warnings, all in untouched files.
+- `npm run build` passes; lint introduces no new findings. UX1's baseline was 2 errors / 3 warnings; after UX2 also removed the pre-existing Reproducer findings, only 1 error / 1 warning remain in untouched `Videobackground.tsx`.
 - Existing T6 edits in `CharactersSection.tsx` and `odd/tasks/character-cards-slab.md` remain unchanged.
 
 ## Verification Commands
 
 - From `frontend/`: `npm run build` → PASS.
-- From `frontend/`: `npm run lint` → existing baseline 2 errors / 3 warnings; no new findings.
+- From `frontend/`: `npm run lint` → UX1 baseline 2 errors / 3 warnings; UX2 result 1 error / 1 warning, both in untouched `Videobackground.tsx`.
 - Manual browser checks: keyboard-only skip/navigation/audio; deep link and scroll-back focus behavior; audio first play, pause, resume, and rejected-play feedback; viewport widths 375px and 1440px; reduced-motion remains unchanged in this slice.
 - Confirm `git status` preserves the pre-existing T6 and generated Next agent-file changes; stage only intended UX files and this task document.
 
@@ -61,9 +61,14 @@ The section links are currently only in the footer, the page has no main landmar
 - UX1 implemented: added the skip link and main landmark, made the existing logo the page H1, and added compact section navigation that is inert/hidden until the existing header transition completes. If scrolling back hides the nav while a link has focus, it remains visible until focus leaves.
 - UX1 verification: `npm run build` passed. `npm run lint` returned the existing 2 errors / 3 warnings (Reproducer and Videobackground). Built SSR HTML confirmed one H1, one main landmark, the skip link, all three section destinations, the initially inert/labeled header nav, and all three unchanged footer anchors. `git diff --check` passed.
 - UX1 runtime limitation: `curl http://localhost:3000` found no running server, and no desktop browser is connected. Animation timing, keyboard focus transitions, and visual layout were not visually verified.
-- UX1 work-unit commit: to be recorded with UX2 progress.
-- UX2 pending implementation.
+- UX1 work-unit commit: `6cd2244` (`feat(a11y): add skip link and collapsed section navigation`).
+- UX1 rollback boundary: revert only `frontend/app/page.tsx` and `frontend/components/Header.tsx` to remove the skip link/main landmark/header H1/nav; keep the independent UX2 player change.
+- UX2 implemented: removed the delayed seek, set the first-play cue once, resume from the captured pause time, wait for `play()` to resolve before setting the playing state, and announce playback/load failures in Spanish. Added visible focus states and safe-area-aware placement. Removed the existing unused empty props type and unused component parameter while updating this component.
+- UX2 verification: `npm run build` passed. `npm run lint` reported 1 pre-existing error and 1 warning in untouched `Videobackground.tsx`; the prior Reproducer error and 2 warnings no longer appear. Built SSR HTML confirmed the audio element, labeled play/volume controls, polite status region, safe-area offsets, and the UX1 semantic/navigation structure. `git diff --check` passed.
+- UX2 runtime limitation: no server is running at `localhost:3000`, and no desktop browser is connected. First-play/pause/resume timing, rejected playback behavior, keyboard focus appearance, and mobile safe-area layout were not interactively verified.
+- UX2 rollback boundary: revert only `frontend/components/Reproducer.tsx` to remove the audio behavior changes without affecting page semantics or section navigation.
+- UX2 work-unit commit: hash to be recorded in a follow-up bookkeeping commit.
 
 ## Next Step
 
-Implement UX2 as a separate work-unit commit, then run the checks and report any browser-only verification that remains unavailable.
+Record the UX2 commit hash in this evidence after the separate work-unit commit; repeat browser-only checks when a desktop browser is available.
