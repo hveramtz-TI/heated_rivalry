@@ -34,6 +34,12 @@ interface TiltedCardProps {
   showTooltip?: boolean;
   overlayContent?: React.ReactNode;
   displayOverlayContent?: boolean;
+  /**
+   * Optional slot rendered inside the tilting container in place of the
+   * built-in image/placeholder block. When omitted, the component behaves
+   * exactly as before.
+   */
+  content?: React.ReactNode;
 }
 
 const springValues: SpringOptions = {
@@ -58,7 +64,8 @@ export default function TiltedCard({
   mobileWarningText,
   showTooltip = true,
   overlayContent = null,
-  displayOverlayContent = false
+  displayOverlayContent = false,
+  content = null
 }: TiltedCardProps) {
   const ref = useRef<HTMLElement>(null);
   const x = useMotionValue(0);
@@ -135,7 +142,9 @@ export default function TiltedCard({
           scale
         }}
       >
-        {imageSrc ? (
+        {content ? (
+          content
+        ) : imageSrc ? (
           <MotionImage
             src={imageSrc}
             alt={altText}
