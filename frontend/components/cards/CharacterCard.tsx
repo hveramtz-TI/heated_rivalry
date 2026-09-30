@@ -148,7 +148,7 @@ export default function CharacterCard({
             <div className="flex flex-col gap-2.5">
               <SlabLabel name={name} number={number} band={tone.band} />
 
-              <div className="overflow-hidden rounded-md bg-black/50 shadow-[0_12px_28px_-16px_rgba(0,0,0,0.95)] ring-1 ring-black/70">
+              <div className="relative overflow-hidden rounded-md bg-black/50 shadow-[0_12px_28px_-16px_rgba(0,0,0,0.95)] ring-1 ring-black/70">
                 {character.cardArt ? (
                   <Image
                     src={character.cardArt}
@@ -162,6 +162,20 @@ export default function CharacterCard({
                 ) : (
                   <div className="flex aspect-[3/4] w-full items-center justify-center bg-black/60 px-4 text-center text-sm text-white/70">
                     {MISSING_CONTENT_LABEL}
+                  </div>
+                )}
+
+                {/* Team and nationality badges over the photo; the descendant
+                    utilities shrink Shield's default 64px pill to a badge. */}
+                {shields.length > 0 && (
+                  <div className="absolute bottom-3 left-3 flex gap-1.5 drop-shadow-[0_2px_6px_rgba(0,0,0,0.65)] [&>div>div]:rounded-xl [&>div>div]:border [&>div>div]:p-1 [&_img]:h-10 [&_img]:w-10">
+                    {shields.map((shield) => (
+                      <Shield
+                        key={shield.src}
+                        imageSrc={shield.src}
+                        alt={shield.alt}
+                      />
+                    ))}
                   </div>
                 )}
               </div>
@@ -180,14 +194,6 @@ export default function CharacterCard({
       />
 
       <div className="flex flex-col gap-5">
-        {shields.length > 0 && (
-          <div className="flex flex-row flex-wrap gap-4">
-            {shields.map((shield) => (
-              <Shield key={shield.src} imageSrc={shield.src} />
-            ))}
-          </div>
-        )}
-
         <h3 className="text-4xl text-white font-bold md:text-6xl">{name}</h3>
 
         <p className="max-w-lg text-base text-white md:max-w-xl md:text-lg">

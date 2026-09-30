@@ -9,7 +9,7 @@ Restyle the three roster cards (`CharacterCard`) into a graded trading-card "sla
 The user wants the roster cards to look like a graded card in a slab. Product decision (user-confirmed, 2026-09-30): **site identity only** — no real brand marks or names ("PSA", "Upper Deck", "Young Guns"). Decorative label chrome (card number, grade, cert, barcode) is fictional, deterministic, and derived in-component.
 
 ## Scope
-- **In:** `frontend/components/cards/CharacterCard.tsx` (rebuild); minimal backward-compatible extension of `frontend/components/reactbits/tiltedCard.tsx` (optional content slot so the whole slab tilts as one object); one-line ordinal prop pass in `frontend/components/sections/CharactersSection.tsx` (existing map only).
+- **In:** `frontend/components/cards/CharacterCard.tsx` (rebuild); minimal backward-compatible extension of `frontend/components/reactbits/tiltedCard.tsx` (optional content slot so the whole slab tilts as one object); one-line ordinal prop pass in `frontend/components/sections/CharactersSection.tsx` (existing map only); `frontend/components/Shield.tsx` (optional `alt` prop; T4).
 - **Out:** data files, types, other components, `globals.css`, slice-5 motion work, real brand marks, new animations/ScrollTriggers.
 
 ## Constraints (hard)
@@ -24,6 +24,7 @@ The user wants the roster cards to look like a graded card in a slab. Product de
 - [x] T1 — Slab composition: acrylic case + accent label (set line, name, `#NNN`, `GEM MINT 10`, white lower band with decorative barcode + "HR" monogram + 8-digit cert) + rimmed art slot with missing-art panel; label region `aria-hidden`.
 - [x] T2 — Whole-slab tilt: minimal optional-slot extension of `tiltedCard.tsx` + card wiring; moderate tilt/scale values.
 - [x] T3 — Verification: build PASS; lint exactly 2/3; brand-strings grep zero; no focusables added; dev HTTP smoke; report.
+- [x] T4 — Shields overlay (user feedback 2026-09-30): move `shields` (team + nationality) from the info-block row onto the photo, bottom-left, as small badges; drop the info-block row; `Shield` gains optional `alt` fed from `ImageRef.alt`.
 
 ## Route
 T1/T2: one delegated writer (`general`), single writer thread. T3: writer runs checks; parent spot-check; user visual acceptance.
@@ -44,6 +45,7 @@ T1/T2: one delegated writer (`general`), single writer thread. T3: writer runs c
 - Writer: T3 checks — `npm run build` PASS (`/` prerendered static); `npm run lint` exactly 2 errors / 3 warnings (same Reproducer/Videobackground baseline); brand + focusable greps zero hits; temp dev server on `:3000` returned 200 with 3 cards and correct chrome (`#001/#002/#003`, certs `81357911/82715822/84073733`, eager/lazy art, no `<img>` for Hunter), then stopped. No browser was connected, so hover-tilt was verified by source/SSR only.
 - Parent (2026-09-30): verification appended — independent gate on `129aac0`: `npm run build` PASS; `npm run lint` 2/3 (exact baseline, zero new); diff limited to the 4 intended files; RDD off (global) and `gentle-ai review assess` returned high/unassessable (runtime not eligible for immutable receipt review — no review was started, per the disabled switch). Fresh-context independent verifier: ALL PASS — scope, content preservation, accent parity (byte-identical classes), label determinism (`#NNN`, cert `80000000+n*1357911`, pure-CSS barcode), `tiltedCard` backward-compat, SSR sanity (3 articles, certs, 300×400, eager×1, no focusables, perspective), greps zero; no blockers or should-fix items. Not verifiable without a browser: hover tilt feel, sheen, GSAP interplay.
 - Dev-state: `next dev` (Next 16.3.6) regenerates `frontend/AGENTS.md` and `frontend/CLAUDE.md` on every run (untracked; currently present while the dev server runs). Disable with `agentRules: false` if undesired.
+- Writer: T4 done — `shields` moved onto the art as an `absolute bottom-3 left-3` badge row inside the rim (`relative` added), images 40px via consumer descendant utilities (`[&_img]:h-10/w-10`, `[&>div>div]:p-1/border/rounded-xl`) + `drop-shadow`, each badge fed `ImageRef.alt`; `Shield` gained optional `alt` (default `"Shield"`), info-block row removed, Hunter renders no overlay. Checks on the running `:3000` dev server (not restarted): build PASS, lint 2/3, focusable + brand greps zero, SSR shows 3 imgs (art + 2 data alts) + overlay for Hollander/Rozanov, 0 imgs/none for Hunter, old row gone, Tailwind override rules present in served CSS.
 
 ## Next step
-Visual acceptance by user on the running dev server (`localhost:3000`); then slice 5 (motion hardening) or PR-chain planning for the stacked slices.
+Visual re-acceptance of T4 on the running dev server (`localhost:3000`); after that, slice 5 (motion hardening) or PR-chain planning for the stacked slices.
