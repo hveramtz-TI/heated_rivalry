@@ -10,6 +10,7 @@ const Header = () => {
   const headerRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLImageElement>(null);
   const navRef = useRef<HTMLElement>(null);
+  const navVisibleRef = useRef(false);
   const navHidePendingRef = useRef(false);
 
   useEffect(() => {
@@ -21,10 +22,13 @@ const Header = () => {
 
       if (visible) {
         navHidePendingRef.current = false;
+        if (navVisibleRef.current) return;
+
         nav.style.visibility = "visible";
         nav.style.pointerEvents = "auto";
         nav.inert = false;
         nav.removeAttribute("aria-hidden");
+        navVisibleRef.current = true;
         return;
       }
 
@@ -34,10 +38,13 @@ const Header = () => {
       }
 
       navHidePendingRef.current = false;
+      if (!navVisibleRef.current) return;
+
       nav.style.visibility = "hidden";
       nav.style.pointerEvents = "none";
       nav.inert = true;
       nav.setAttribute("aria-hidden", "true");
+      navVisibleRef.current = false;
     };
 
     const nav = navRef.current;
@@ -50,7 +57,9 @@ const Header = () => {
       }
 
       if (navHidePendingRef.current) {
-        queueMicrotask(() => setCompactNavVisible(false));
+        queueMicrotask(() => {
+          if (navHidePendingRef.current) setCompactNavVisible(false);
+        });
       }
     };
 

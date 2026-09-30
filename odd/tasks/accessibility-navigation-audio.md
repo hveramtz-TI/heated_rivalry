@@ -40,6 +40,7 @@ The section links are currently only in the footer, the page has no main landmar
 
 - The page exposes one visible H1, one main landmark, and a skip link that is visible on keyboard focus and lands at main content.
 - The header provides labeled links to personajes, temporadas, and libros after collapse; links are hidden and out of tab order while the full hero is shown; focus is not lost or hidden if scroll returns to the hero while a link is focused.
+- Compact navigation style and ARIA DOM writes occur only when visibility changes; scrolling back to the collapsed state cancels a pending hide while focus remains in the navigation.
 - Native anchor navigation preserves browser URL/history behavior and the fixed-header offset.
 - First explicit play starts at 5 seconds once; pause/resume returns to the stored position; no delayed seek occurs.
 - Playback rejection/error is visibly announced in Spanish; play and volume controls have visible keyboard focus; fixed controls respect safe areas and do not obscure essential content.
@@ -68,7 +69,13 @@ The section links are currently only in the footer, the page has no main landmar
 - UX2 runtime limitation: no server is running at `localhost:3000`, and no desktop browser is connected. First-play/pause/resume timing, rejected playback behavior, keyboard focus appearance, and mobile safe-area layout were not interactively verified.
 - UX2 rollback boundary: revert only `frontend/components/Reproducer.tsx` to remove the audio behavior changes without affecting page semantics or section navigation.
 - UX2 work-unit commit: `f3c7edf` (`fix(audio): keep playback position predictable and accessible`).
+- 2026-09-30 bounded correction: `Header.tsx` uses a ref-backed visibility guard so repeated ScrollTrigger updates do not repeat style, `inert`, or `aria-hidden` writes while visibility is unchanged. Focus retention remains intact: a pending hide is canceled when scrolling back before focus leaves, and the deferred focus-out hide rechecks that the request is still pending. No React state is updated per scroll frame.
+- The separate visible Characters `<h2>` recommendation in `planning-ux-ui.md:39,79` remains deferred because `CharactersSection.tsx` has protected in-progress T6 changes and was intentionally out of scope. `CharactersSection.tsx`, `odd/tasks/character-cards-slab.md`, and `planning-ux-ui.md` were not modified.
+- Correction verification: from `frontend/`, `npm run build` passed (with Next.js's existing `images.domains` deprecation notice); `npm run lint` reported 1 error and 1 warning, both in untouched `Videobackground.tsx` (`no-empty-object-type` and unused `props`). Source readback confirmed each requested-state guard returns before style, `inert`, or `aria-hidden` writes; `git diff --check` passed.
+- Correction runtime limitation: visibility/focus transitions were not checked interactively; verification was source-level only, and no server was restarted or stopped.
+- Correction rollback boundary: revert only the visibility guard and deferred-hide check in `Header.tsx`, plus the correction-specific additions here; preserve the independent UX1/UX2 work.
+- Correction work-unit commit: `perf(a11y): avoid redundant compact-nav DOM updates`.
 
 ## Next Step
 
-Repeat browser-only checks when a desktop browser is available; no source changes remain for this slice.
+Repeat browser-only checks when a desktop browser is available. The separate Characters `<h2>` recommendation remains deferred with the protected T6 work.
