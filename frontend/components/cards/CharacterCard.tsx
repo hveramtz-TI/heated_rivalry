@@ -145,7 +145,7 @@ export default function CharacterCard({
 
   return (
     <article
-      className={`${tone.field} flex h-full flex-col gap-6 rounded-[15px] p-6 md:max-h-[100dvh] md:flex-row md:items-center md:gap-10 md:p-8 ${
+      className={`${tone.field} flex h-full flex-col gap-6 rounded-[15px] p-6 md:max-h-[100dvh] md:items-center md:gap-10 md:p-8 ${
         mirrored ? "md:flex-row-reverse" : "md:flex-row"
       }`}
     >
