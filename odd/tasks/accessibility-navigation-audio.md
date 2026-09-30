@@ -67,8 +67,8 @@ The section links are currently only in the footer, the page has no main landmar
 - UX2 verification: `npm run build` passed. `npm run lint` reported 1 pre-existing error and 1 warning in untouched `Videobackground.tsx`; the prior Reproducer error and 2 warnings no longer appear. Built SSR HTML confirmed the audio element, labeled play/volume controls, polite status region, safe-area offsets, and the UX1 semantic/navigation structure. `git diff --check` passed.
 - UX2 runtime limitation: no server is running at `localhost:3000`, and no desktop browser is connected. First-play/pause/resume timing, rejected playback behavior, keyboard focus appearance, and mobile safe-area layout were not interactively verified.
 - UX2 rollback boundary: revert only `frontend/components/Reproducer.tsx` to remove the audio behavior changes without affecting page semantics or section navigation.
-- UX2 work-unit commit: hash to be recorded in a follow-up bookkeeping commit.
+- UX2 work-unit commit: `f3c7edf` (`fix(audio): keep playback position predictable and accessible`).
 
 ## Next Step
 
-Record the UX2 commit hash in this evidence after the separate work-unit commit; repeat browser-only checks when a desktop browser is available.
+Repeat browser-only checks when a desktop browser is available; no source changes remain for this slice.
