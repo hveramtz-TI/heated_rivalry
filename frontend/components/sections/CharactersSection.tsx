@@ -84,7 +84,7 @@ export default function CharactersSection() {
       <div ref={offsetRef}>
         <div
           ref={gridRef}
-          className="mx-auto grid w-full max-w-6xl gap-8 px-6 py-24 md:grid-cols-3 md:px-8"
+          className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 py-24 md:gap-24 md:px-8"
         >
           {characters.map((character, index) => (
             <div
