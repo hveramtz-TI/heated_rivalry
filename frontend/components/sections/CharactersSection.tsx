@@ -94,7 +94,7 @@ export default function CharactersSection() {
                 cardRefs.current[index] = element;
               }}
             >
-              <CharacterCard character={character} eager={index === 0} />
+              <CharacterCard character={character} eager={index === 0} number={index + 1} />
             </div>
           ))}
         </div>
