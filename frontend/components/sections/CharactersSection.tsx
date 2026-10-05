@@ -16,9 +16,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  * 55vh offset contract transferred out of `Header.tsx` (design D6): the
  * ScrollTrigger watches the unmarginated section root while the margin tween
  * runs on an inner wrapper, which avoids the self-referential progress loop a
- * margin on the trigger element would create. Each row wrapper also owns its
- * own entrance/exit ScrollTrigger, so rows animate as they enter and leave the
- * viewport instead of in one reveal at the section top.
+ * margin on the trigger element would create. Each grid item wrapper also owns
+ * its own entrance/exit ScrollTrigger, so items animate as they enter and leave
+ * the viewport instead of in one reveal at the section top.
  */
 export default function CharactersSection() {
   const rootRef = useRef<HTMLElement>(null);
@@ -50,36 +50,36 @@ export default function CharactersSection() {
       });
       offsetTimeline.to(offset, { marginTop: "55vh", ease: "power1.out" }, 0);
 
-      // Per-row entrance/exit: each wrapper owns four paused tweens plus one
-      // ScrollTrigger, so a row animates when its own edges cross the band —
+      // Per-item entrance/exit: each wrapper owns four paused tweens plus one
+      // ScrollTrigger, so an item animates when its own edges cross the band —
       // in from below / out above while scrolling down, mirrored while
       // scrolling up — instead of the old one-shot reveal at the section top.
       // Targets come from the wrapper refs only: no global selectors here.
-      const rows = cardRefs.current.filter(
-        (row): row is HTMLDivElement => row !== null,
+      const items = cardRefs.current.filter(
+        (item): item is HTMLDivElement => item !== null,
       );
 
-      // Measure rows in the final 55vh layout, not at the current scrub point.
-      // Remove each row's entrance/exit y transform so refresh sees its natural
+      // Measure items in the final 55vh layout, not at the current scrub point.
+      // Remove each item's entrance/exit y transform so refresh sees its natural
       // flow position, then add the remaining hero margin to its document top.
-      const getFinalLayoutBounds = (row: HTMLDivElement) => {
+      const getFinalLayoutBounds = (item: HTMLDivElement) => {
         const currentMarginTop =
           Number.parseFloat(window.getComputedStyle(offset).marginTop) || 0;
         const targetMarginTop = window.innerHeight * 0.55;
-        const rowTranslateY = Number(gsap.getProperty(row, "y", "px")) || 0;
+        const itemTranslateY = Number(gsap.getProperty(item, "y", "px")) || 0;
         const top =
-          row.getBoundingClientRect().top +
+          item.getBoundingClientRect().top +
           window.scrollY +
           targetMarginTop -
           currentMarginTop -
-          rowTranslateY;
+          itemTranslateY;
 
-        return { top, bottom: top + row.offsetHeight };
+        return { top, bottom: top + item.offsetHeight };
       };
 
-      for (const row of rows) {
+      for (const item of items) {
         const enterFromBelow = gsap.fromTo(
-          row,
+          item,
           { opacity: 0, y: 64 },
           {
             opacity: 1,
@@ -90,7 +90,7 @@ export default function CharactersSection() {
             overwrite: "auto",
           },
         );
-        const exitAbove = gsap.to(row, {
+        const exitAbove = gsap.to(item, {
           opacity: 0,
           y: -64,
           duration: 0.6,
@@ -98,11 +98,11 @@ export default function CharactersSection() {
           paused: true,
           overwrite: "auto",
         });
-        // `immediateRender: false` keeps this from-state off the row until the
+        // `immediateRender: false` keeps this from-state off the item until the
         // user actually scrolls back up into it (otherwise it would clobber
-        // the from-below state that the below-fold rows start in).
+        // the from-below state that the below-fold items start in).
         const enterFromAbove = gsap.fromTo(
-          row,
+          item,
           { opacity: 0, y: -64 },
           {
             opacity: 1,
@@ -114,7 +114,7 @@ export default function CharactersSection() {
             overwrite: "auto",
           },
         );
-        const exitBelow = gsap.to(row, {
+        const exitBelow = gsap.to(item, {
           opacity: 0,
           y: 64,
           duration: 0.6,
@@ -124,14 +124,14 @@ export default function CharactersSection() {
         });
 
         const trigger = ScrollTrigger.create({
-          trigger: row,
+          trigger: item,
           start: () => {
-            const { top } = getFinalLayoutBounds(row);
-            const rowEntry = top - window.innerHeight * 0.8;
-            return Math.max(offsetTimeline.scrollTrigger?.end ?? 0, rowEntry);
+            const { top } = getFinalLayoutBounds(item);
+            const itemEntry = top - window.innerHeight * 0.8;
+            return Math.max(offsetTimeline.scrollTrigger?.end ?? 0, itemEntry);
           },
           end: () => {
-            const { bottom } = getFinalLayoutBounds(row);
+            const { bottom } = getFinalLayoutBounds(item);
             return bottom - window.innerHeight * 0.22;
           },
           onEnter: () => enterFromBelow.play(0),
@@ -140,11 +140,11 @@ export default function CharactersSection() {
           onLeaveBack: () => exitBelow.play(0),
         });
 
-        // A deep link (e.g. `#personajes`) can create a row already inside its
-        // range, where ScrollTrigger never fires `onEnter`; settle those rows
+        // A deep link (e.g. `#personajes`) can create an item already inside its
+        // range, where ScrollTrigger never fires `onEnter`; settle those items
         // in place rather than leaving them hidden in the from-state.
         if (trigger.progress > 0 && trigger.progress < 1) {
-          gsap.set(row, { opacity: 1, y: 0 });
+          gsap.set(item, { opacity: 1, y: 0 });
         }
       }
     },
@@ -163,13 +163,14 @@ export default function CharactersSection() {
       <div ref={offsetRef}>
         <div
           ref={gridRef}
-          className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 py-24 md:gap-24 md:px-8"
+          className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-10 px-6 py-24 sm:grid-cols-2 md:px-8 lg:grid-cols-3 lg:gap-12"
         >
           {/* Visible section heading: gives the roster an h2 between the page
-              h1 and the card h3s. The heading sits inside the animated offset
-              wrapper; the T6 per-row triggers measure live row bounds, so the
-              extra height is included on refresh. */}
-          <header className="flex flex-col gap-4">
+              h1 and the card h3s. `col-span-full` keeps the heading across all
+              grid columns; the heading sits inside the animated offset wrapper,
+              and the per-item triggers measure live item bounds, so the extra
+              height is included on refresh. */}
+          <header className="col-span-full flex flex-col gap-4">
             <h2
               id="personajes-heading"
               className="text-4xl font-bold text-white md:text-6xl"
@@ -182,6 +183,8 @@ export default function CharactersSection() {
             </p>
           </header>
 
+          {/* Roster grid: one cell per character; `h-full` stretches each card
+              to the row height so items stay aligned regardless of bio length. */}
           {characters.map((character, index) => (
             <div
               key={character.id}

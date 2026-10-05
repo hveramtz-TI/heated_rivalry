@@ -127,10 +127,10 @@ function SlabLabel({ name, number, band }: SlabLabelProps) {
  * Only"): no links, buttons, or handlers beyond the decorative hover tilt.
  * The art sits in a graded trading-card slab whose label chrome (card number,
  * grade, barcode, cert) is fictional and derived from the roster ordinal.
- * On `md`+ the card is a single row — card zone with the name underneath on
- * one side, description column on the other, alternating per position — and
- * below `md` the zones stack vertically. Every empty slot renders the shared
- * Spanish missing-content label.
+ * The card is a vertical stack in every grid cell — slab and name centred at
+ * the top, description below — so the roster reads in a consistent order
+ * regardless of the column count. Every empty slot renders the shared Spanish
+ * missing-content label.
  */
 export default function CharacterCard({
   character,
@@ -140,22 +140,14 @@ export default function CharacterCard({
   const tone = ACCENT_TONES[character.accent ?? "neutral"];
   const name = character.name ?? MISSING_CONTENT_LABEL;
   const shields = character.shields ?? [];
-  // Odd roster positions mirror the desktop row: card zone right, copy left.
-  const mirrored = number % 2 === 1;
 
   return (
     <article
-      className={`${tone.field} flex h-full flex-col gap-6 rounded-[15px] p-6 md:max-h-[100dvh] md:items-center md:gap-10 md:p-8 ${
-        mirrored ? "md:flex-row-reverse" : "md:flex-row"
-      }`}
+      className={`${tone.field} flex h-full flex-col gap-6 rounded-[15px] p-6 md:gap-8 md:p-8`}
     >
-      {/* Card zone: the slab with the name centred underneath. Its width is
-          derived from the viewport height so the desktop row stays inside
-          `max-h-[100dvh]`: 24rem approximates the article padding, case chrome,
-          label and name outside the art, and the 0.75 factor turns the
-          remaining height into the 3:4 art width. The 40% term keeps the
-          description column readable on narrower desktops. */}
-      <div className="flex w-full flex-col items-center gap-5 md:w-[min(100%,calc((100dvh_-_24rem)*0.75),40%)] md:shrink-0">
+      {/* Card zone: the slab with the name centred underneath, always full
+          cell width so every grid item shares the same visual anchor. */}
+      <div className="flex w-full flex-col items-center gap-5">
         <TiltedCard
           content={
             <div className="relative rounded-2xl bg-gradient-to-b from-white/20 via-white/10 to-white/5 p-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_28px_60px_-30px_rgba(0,0,0,0.9)] ring-1 ring-white/25 sm:p-3">
@@ -169,7 +161,7 @@ export default function CharacterCard({
                       alt={character.name ?? ""}
                       width={300}
                       height={400}
-                      sizes="(min-width: 768px) 30vw, 90vw"
+                      sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
                       loading={eager ? "eager" : "lazy"}
                       className="block h-auto w-full"
                     />
@@ -207,12 +199,12 @@ export default function CharacterCard({
           showTooltip={false}
         />
 
-        <h3 className="text-center text-4xl text-white font-bold md:text-6xl">
+        <h3 className="text-center text-3xl font-bold text-white md:text-4xl">
           {name}
         </h3>
       </div>
 
-      <div className="w-full md:min-w-0 md:flex-1">
+      <div className="w-full">
         <p className="max-w-prose text-base text-white md:text-lg">
           {character.bio ?? MISSING_CONTENT_LABEL}
         </p>
