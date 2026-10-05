@@ -227,7 +227,7 @@ const Header = () => {
         >
           <Image
             ref={logoRef}
-            src="/logo.png"
+            src="/logo.webp"
             alt="Heated Rivalry"
             width={500}
             height={500}

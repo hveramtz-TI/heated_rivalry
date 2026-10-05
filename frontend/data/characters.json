@@ -3,8 +3,8 @@
     "id": "hollander",
     "name": "Hollander",
     "bio": "Hollander es un competidor experimentado, reconocido por su mente estratégica y su determinación incansable. Con años de experiencia a sus espaldas, ha perfeccionado sus habilidades hasta la excelencia, lo que lo convierte en un rival formidable en cualquier desafío. Su serenidad y su enfoque analítico le permiten mantener la compostura bajo presión, superando a menudo a sus rivales con tácticas bien pensadas. Fuera de la cancha, Hollander es respetado por su deportividad y su dedicación a formar a nuevos talentos en la comunidad.",
-    "portrait": "/hollander.png",
-    "cardArt": "/hollanderCard.jpg",
+    "portrait": "/hollander.webp",
+    "cardArt": "/hollanderCard.webp",
     "accent": "rivalryRed",
     "shields": [
       {
@@ -21,8 +21,8 @@
     "id": "rozanov",
     "name": "Rozanov",
     "bio": "Rozanov es un competidor audaz, reconocido por su enfoque innovador y su capacidad para adaptarse rápidamente a cualquier situación. Su agilidad mental y física lo convierten en un rival impredecible, capaz de sorprender con movimientos inesperados. Siempre busca superar sus propios límites y desafiar las expectativas, inspirando a otros con su pasión y energía. Fuera de la competencia, Rozanov es admirado por su espíritu colaborativo y su compromiso con el desarrollo de nuevas estrategias en la comunidad.",
-    "portrait": "/rozanov.png",
-    "cardArt": "/rozanovCard.jpg",
+    "portrait": "/rozanov.webp",
+    "cardArt": "/rozanovCard.webp",
     "accent": "electricBlue",
     "shields": [
       {

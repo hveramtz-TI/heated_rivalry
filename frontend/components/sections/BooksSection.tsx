@@ -12,7 +12,7 @@ const BooksSection = () => {
   return (
     <section
       id="libros"
-      className="relative isolate w-full scroll-mt-24 bg-[url('/bookSectionbg.jpg')] bg-cover bg-center px-6 py-16 md:px-8"
+      className="relative isolate w-full scroll-mt-24 bg-[url('/bookSectionbg.webp')] bg-cover bg-center px-6 py-16 md:px-8"
     >
       <div
         aria-hidden="true"
