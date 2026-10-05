@@ -1,0 +1,25 @@
+[
+  {
+    "id": "book-ejemplo-1",
+    "title": "Título del libro de ejemplo",
+    "cover": "/images/books/ejemplo-portada-1.jpg",
+    "description": "Descripción de ejemplo. Reemplazar por la sinopsis real del libro.",
+    "published": "2099-01-01",
+    "pages": 123,
+    "purchaseUrls": [
+      {
+        "provider": "Librería de ejemplo",
+        "url": "https://example.com/libro-de-ejemplo-1"
+      }
+    ]
+  },
+  {
+    "id": "book-ejemplo-2",
+    "title": "Título del segundo libro de ejemplo",
+    "cover": "/images/books/ejemplo-portada-2.jpg",
+    "description": "Descripción de ejemplo. Reemplazar por la sinopsis real del libro.",
+    "published": "2099-02-02",
+    "pages": 456,
+    "purchaseUrls": []
+  }
+]
