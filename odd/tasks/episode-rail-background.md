@@ -53,7 +53,8 @@ The requested rail better presents episode cards as a sequence, while the suppli
 - `npm run build`: passed in the worker and in the parent spot check; TypeScript and static generation completed.
 - `npm run lint`: failed on the existing `components/Videobackground.tsx` empty-object type error, with its unused `props` warning and an unrelated unused `Shield` warning in `components/CharacterCard.tsx`; neither file is in scope.
 - Browser-based visual, keyboard, and contrast checks were not run.
-- Receipt-driven development is on globally. Committed-only risk assessment and commit identity remain pending.
+- Work-unit commit: `a00577310a289989f9d2316d73150bb4453bdc2e` (`feat(seasons): add episode rail and image background`).
+- RDD is on globally. Committed-only assessment with base `c1648461` returned `review_due: true` and `risk: high`/`unassessable` because untracked files were undeclared. The subsequent exact-lineage preflight did not begin: Git could not resolve `c1648461^{tree}`, returned `git_command_failed`, `mutation_outcome: not_started`, and `next_action: stop`. No review lineage or receipt was created.
 
 ## Next Step
-Commit the scoped work unit, assess that committed range under RDD policy, then record its commit identity and risk outcome here and in the Engram mirror.
+Resolve the valid review base and follow the repository's native review policy before treating RDD as complete. Do not claim an approval or receipt for this commit.
