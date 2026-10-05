@@ -21,6 +21,7 @@ User feedback (2026-10-05): the Characters section content distribution is not o
 
 ## Tasks
 - [x] T1 — Grid layout + card cell redesign + per-item motion adaptation in the two files.
+- [x] T2 — User-revised container (2026-10-05): flex instead of grid — `flex w-full flex-col gap-[15px] p-8`, cards row `flex flex-col gap-[15px] md:flex-row`, wrappers `h-full md:min-w-0 md:flex-1`; `mx-auto`/`max-w-6xl`/grid classes removed. CharacterCard vertical cell unchanged.
 
 ## Route and delivery
 - **Route:** delegated direct; one writer (writer trigger: 2 non-trivial files).
@@ -44,7 +45,8 @@ User feedback (2026-10-05): the Characters section content distribution is not o
 - Writer: container `grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-12`, header `col-span-full`; card is a vertical stack (slab, `h3` `text-3xl md:text-4xl`, bio); mirrored/max-h/width-formula removed; motion kept with row→item rename only. +48/−53 = 101 changed lines.
 - Writer checks: `npm run build` PASS; `npm run lint` exact baseline (`Videobackground.tsx` 1 error / 1 warning); built HTML: grid classes present, 3 `h3`s in data order (Hollander, Rozanov, Hunter), heading intact, forbidden remnants zero.
 - Parent spot-check: `npm run build` PASS.
+- T2 complete (user revised the grid to a flex row). Work-unit commit: `162dc7c` (`feat(characters): flex row roster container with 15px gaps`). Writer checks: `npm run build` PASS; lint baseline; built HTML: `flex w-full flex-col gap-[15px] p-8`, inner `flex flex-col gap-[15px] md:flex-row`, wrappers `h-full md:min-w-0 md:flex-1`, no grid remnants, 3 articles intact. Parent spot-check: `npm run build` PASS.
 - Browser visual acceptance (breakpoints, equal-height alignment, tilt, motion feel) still pending; no browser connected.
 
 ## Next Step
-Assess the work-unit commit under RDD (boundary `19446ad`); browser visual acceptance later.
+Assess the work-unit commits under RDD (boundary `19446ad`); browser visual acceptance later.

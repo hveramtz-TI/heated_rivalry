@@ -17,17 +17,18 @@ Improve the UI and UX of the Characters, Seasons, and Books sections and the foo
 - **Out:** hero/header, Lenis/global reduced-motion, audio player, `globals.css` font change, catalog content beyond approved data, invented books/links/social/legal destinations, new dependencies.
 
 ## Constraints
-- Preserve accepted designs: graded slab cards, alternating character rows, T6 per-row ScrollTrigger behavior and its 55vh hero-offset geometry.
+- Preserve accepted designs: graded slab cards, per-item ScrollTrigger behavior and its 55vh hero-offset geometry (the alternating-row layout was later revised to a flex row per user request — see `odd/tasks/characters-grid-layout.md`).
 - No invented canon: book examples are visibly labeled as examples/template and never presented as real catalog data; no purchase links.
 - Spanish site copy, neutral register; code/comments in English.
 - Keep reduced-motion gates, focus-visible states, semantic landmarks; touch targets at least 44x44.
 - Lint must not grow beyond the current baseline (1 error / 1 warning in untouched `Videobackground.tsx`).
 
 ## Tasks
-- [ ] T1 — Characters: visible level-2 "Personajes" heading with short intro; coherent heading hierarchy; preserve slab/rows/T6 animation geometry.
-- [ ] T2 — Seasons: designed episode-art placeholder instead of missing label; omit absent air date; season meta (episode count); 44px rail controls and season pills; clear upcoming-season presentation.
-- [ ] T3 — Books: empty-state skeleton/template grid with labeled examples and owner-facing status copy; BookCard hides absent optional fields instead of repeating labels; `books.example.json` documents the fillable shape.
-- [ ] T4 — Footer: structured layout (brand, navigation, credits), 44px link targets, "Volver arriba" link, fan-site disclaimer; no invented destinations.
+- [x] T1 — Characters: visible level-2 "Personajes" heading with short intro; coherent heading hierarchy; preserve slab/rows/T6 animation geometry; commit `8aceb46`.
+- [x] T2 — Seasons: designed episode-art placeholder instead of missing label; omit absent air date; season meta (episode count); 44px rail controls and season pills; clear upcoming-season presentation; commit `2be3d92`.
+- [x] T3 — Books: empty-state skeleton/template grid with labeled examples and owner-facing status copy; BookCard hides absent optional fields instead of repeating labels; `books.example.json` documents the fillable shape; commit `324195d`.
+- [x] T4 — Footer: structured layout (brand, navigation, credits), 44px link targets, "Volver arriba" link, fan-site disclaimer; no invented destinations; commit `7a37de5`.
+- [x] T5 — Fix user-reported hydration mismatch in `EpisodeRail`: gate the measured `disabled` state behind hydration with `useSyncExternalStore` so SSR attrs stay stable; commit `d98abb1`.
 
 ## Route and delivery
 - **Route:** delegated direct; one writer for all four tasks (2+ non-trivial files; reading prepares writes).
