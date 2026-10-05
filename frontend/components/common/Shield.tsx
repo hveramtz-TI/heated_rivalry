@@ -3,7 +3,6 @@ import Image from 'next/image'
 
 type Props = {
     imageSrc: string;
-    /** Accessible text for the badge image; falls back to the generic label. */
     alt?: string;
     className?: string;
 }

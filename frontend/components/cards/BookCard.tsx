@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import type { Book } from "@/types/content";
+import type { Book } from "@/types/books";
 import { MISSING_CONTENT_LABEL } from "@/data/ui";
 
 /**
@@ -31,15 +31,6 @@ interface BookCardProps {
   onCoverLoad?: () => void;
 }
 
-/**
- * Catalog card (book-catalog spec, T3 polish): cover, title, metadata and
- * description. A retailer link renders if and only if a validated
- * `purchaseUrls` entry exists in JSON — the URL comes exclusively from the
- * loader and is never built, guessed, or templated here (decision 4). Optional
- * fields (cover, published date, pages, description) are omitted or shown as a
- * decorative placeholder instead of repeating a missing-content label; only
- * the required title keeps the shared Spanish label.
- */
 export default function BookCard({ book, onCoverLoad }: BookCardProps) {
   const [coverFailed, setCoverFailed] = useState(false);
   const cover = book.cover;

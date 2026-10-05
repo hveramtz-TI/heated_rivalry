@@ -1,12 +1,5 @@
 import Image from "next/image";
 
-/**
- * Static site footer (site-footer spec, T4 polish). It reads nothing from the
- * JSON data layer — its content is fixed site chrome, not catalog data. Every
- * link is an in-page anchor to a section rendered by the same route; no
- * external, social, or legal destination is invented. Every link target is at
- * least 44px tall.
- */
 const CURRENT_YEAR = new Date().getFullYear();
 
 /** 44px (min-h-11) touch target for every footer link (T4). */

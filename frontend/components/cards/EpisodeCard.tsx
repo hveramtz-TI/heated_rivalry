@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState, type Ref } from "react";
-import type { Episode } from "@/types/content";
+import type { Episode } from "@/types/seasons";
 import { MISSING_CONTENT_LABEL } from "@/data/ui";
 
 /**
