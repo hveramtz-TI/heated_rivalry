@@ -15,6 +15,8 @@ const Header = () => {
   const navHidePendingRef = useRef(false);
   const isMobile = useIsMobile(640);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isCompact, setIsCompact] = useState(false);
+  const compactRef = useRef(false);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -30,7 +32,7 @@ const Header = () => {
   }, [menuOpen]);
 
   const handleLogoPress = () => {
-    if (!isMobile) return;
+    if (!isMobile || !isCompact) return;
     setMenuOpen((open) => !open);
   };
 
@@ -91,6 +93,15 @@ const Header = () => {
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
+    const syncCompact = (compact: boolean) => {
+      if (compactRef.current === compact) return;
+      compactRef.current = compact;
+      setIsCompact(compact);
+      if (!compact) {
+        setMenuOpen(false);
+      }
+    };
+
     const setupAnimated = () => {
       // 1) Define estado inicial para evitar saltos
       gsap.set(videoBg, { filter: "brightness(1) blur(0px)" });
@@ -101,7 +112,11 @@ const Header = () => {
           start: "1% top",
           end: "bottom 50%",
           scrub: true,
-          onUpdate: (self) => setCompactNavVisible(self.progress >= 0.999),
+          onUpdate: (self) => {
+            const atEnd = self.progress >= 0.999;
+            syncCompact(atEnd);
+            setCompactNavVisible(atEnd);
+          },
         },
       });
 
@@ -129,9 +144,11 @@ const Header = () => {
         duration: 0.2,
       }, 0);
 
-      setCompactNavVisible(
-        Boolean(tl.scrollTrigger && tl.scrollTrigger.progress >= 0.999),
+      const initialCompact = Boolean(
+        tl.scrollTrigger && tl.scrollTrigger.progress >= 0.999,
       );
+      syncCompact(initialCompact);
+      setCompactNavVisible(initialCompact);
 
       return () => {
         tl.scrollTrigger?.kill();
@@ -155,6 +172,7 @@ const Header = () => {
         height: "100px",
         filter: "brightness(0) blur(0px)",
       });
+      syncCompact(true);
       setCompactNavVisible(true);
 
       return () => {
@@ -204,7 +222,8 @@ const Header = () => {
           }
           aria-expanded={isMobile ? menuOpen : undefined}
           aria-controls={isMobile ? "mobile-nav" : undefined}
-          className="flex cursor-pointer items-center justify-center rounded-lg border-0 bg-transparent p-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-200 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+          disabled={isMobile && !isCompact}
+          className="flex cursor-pointer items-center justify-center rounded-lg border-0 bg-transparent p-0 disabled:cursor-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-200 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
         >
           <Image
             ref={logoRef}
