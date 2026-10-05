@@ -18,14 +18,10 @@ export default function SeasonTimeline({
   selectedId,
 }: SeasonTimelineProps) {
   return (
-    <div className="relative">
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-white/20"
-      />
+    <div>
       <ol
         aria-label="Recorrido de temporadas"
-        className="relative flex flex-wrap items-center gap-6"
+        className="flex flex-wrap items-center gap-6"
       >
         {seasons.map((season) => {
           const isActive = season.id === selectedId;
