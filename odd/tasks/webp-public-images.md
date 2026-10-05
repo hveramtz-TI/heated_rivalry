@@ -47,9 +47,24 @@ The public asset directory contains JPEG and PNG files, and application referenc
 - Image validation confirmed WebP signatures and matching dimensions for 18/18 assets, alpha preservation for 3/3 PNG sources, and exact byte preservation for `referenciaCard.webp`.
 - Updated references to assets that exist. The six episode entries now point in order to `/1.webp`–`/6.webp`; component and character paths for existing local assets resolve.
 - `npm run build` passed; Next emitted only the existing `images.domains` deprecation warning. `npm run lint` passed. `git diff --check` passed.
-- Existing missing references remain unchanged: six `/images/books/*.jpg` paths and the user-added `/hunterCard.jpg` have no corresponding assets in `frontend/public/`; no artwork mapping was guessed.
+- Existing missing references remain unchanged: the `/images/books/*.jpg` cover paths and the user-added `/hunterCard.jpg` had no corresponding assets in `frontend/public/`; no artwork mapping was guessed.
 - Native risk assessment returned `unassessable` because untracked files need an explicit inventory declaration; treated as high. Writer self-checks and independent verification completed. RDD remains OFF.
-- Work-unit commit identity will be added after commit.
+- Work-unit commit: `abbd24a perf(assets): serve public images as webp` on `feat/webp-public-images`. Staging excluded the user's in-progress catalog content in `books.json` and the Hunter character block in `characters.json`.
+- Post-review correction before freeze: `hollanderCard.webp` was re-encoded from the versioned JPEG blob (quality 82, method 6) because the first encode came out larger than its source (425 KiB -> 503 KiB); final size 350 KiB at the same 1080x1920.
+- Payload measured on the versioned originals: 8.36 MiB of JPEG/PNG -> 3.03 MiB of WebP (63.8% smaller). `referenciaCard` kept its original bytes as a rename only.
+- A `game-changer.jpg` (1594x2400, 224 KiB) appeared in `frontend/public/` during the run; converted to `frontend/public/images/books/game-changer.webp` (100 KiB, 55% smaller) — the directory `books.json` already expects — and that one cover reference now points to `.webp`.
+
+## Follow-ups detected (not part of this task, evidence recorded)
+- Remote team shields do not render: `static.wikia.nocookie.net` returns HTTP 403 both through the Next image optimizer and from a direct request with a browser user-agent. This is pre-existing — the `Montreal_Metros_Logo.png` and `Boston_Raiders_Logo.png` URLs already in `HEAD` fail identically, so Hollander and Rozanov shields were already broken.
+- Remote flag shields are rejected by the optimizer with "image type is not allowed" (`image/svg+xml` needs `images.dangerouslyAllowSVG` plus a CSP); also pre-existing for the Canada and Russia flags in `HEAD`.
+- `characters.json` line 47 pointed at the wiki *page* `https://game-changers-series.fandom.com/wiki/New_York_Admirals`, not an image, and that hostname is not in `next.config.ts` `images.domains`. That raised the runtime error `Invalid src prop ... hostname "game-changers-series.fandom.com" is not configured`. Fixed to the real file URL reported by the wiki API (`.../images/4/4e/New_York_Admirals_Logo.png/revision/latest?cb=20260721134108`), which matches the pattern of the other two characters. The fix lives in the user's uncommitted Hunter block and was left uncommitted on purpose.
+- Still-unmapped image references (no file exists, nothing was guessed): five remaining `/images/books/*.jpg` covers, and `/hunterCard.jpg` inside the user-added Hunter entry.
+- The three UUID-named images in `frontend/public/` (3880x2400, 1159x1545, 1032x1548) are converted but referenced by nothing; their intended role is unknown.
+
+## Runtime verification
+- Live `next dev` on port 3000 (the user's own server): `GET /` returns 200, the Admirals logo URL appears in the HTML, `Invalid src prop` and `Runtime Error` counts are 0.
+- `GET /images/books/game-changer.webp` returns 200, and `/_next/image?url=%2Fimages%2Fbooks%2Fgame-changer.webp` returns 200.
+- `GET /hunterCard.jpg` returns 404, confirming that reference is dangling.
 
 ## Next Step
-Record the work-unit commit identity in this tracker and its Engram mirror.
+Decide how the character shields should be served (local WebP copies of the logos and flags, `unoptimized` remote images, or a graceful `onError` fallback), then supply the missing Hunter card art and remaining book covers so those references can be converted the same way.
