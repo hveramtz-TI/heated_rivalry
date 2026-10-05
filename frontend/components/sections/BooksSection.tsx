@@ -1,9 +1,12 @@
 import booksData from "@/data/books.json";
+import booksExampleData from "@/data/books.example.json";
 import type { Book } from "@/types/books";
 import BookCard from "@/components/cards/BookCard";
 import { MISSING_CONTENT_LABEL } from "@/data/ui";
 
 const books = booksData as Book[];
+const exampleBooks = booksExampleData as Book[];
+const displayBooks = books.length > 0 ? books : exampleBooks;
 
 const BooksSection = () => {
   return (
@@ -17,9 +20,9 @@ const BooksSection = () => {
       />
       <div className="relative z-10 mx-auto w-full max-w-6xl">
         <h2 className="text-3xl font-bold text-white">Libros</h2>
-        {books.length > 0 ? (
+        {displayBooks.length > 0 ? (
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {books.map((book) => (
+            {displayBooks.map((book) => (
               <BookCard key={book.id} book={book} />
             ))}
           </div>
