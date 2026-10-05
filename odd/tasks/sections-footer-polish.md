@@ -50,6 +50,10 @@ Improve the UI and UX of the Characters, Seasons, and Books sections and the foo
 
 ## Progress / Evidence
 - Season catalog commit `5993add`: RDD medium / `under_budget`; pending in slice.
+- T1–T4 implemented by one writer; checks: `npm run build` PASS; `npm run lint` exact baseline (`Videobackground.tsx` 1 error / 1 warning); built HTML: Personajes h2 before h3s, six episode cards with exact titles and no missing label, Books template with "Ejemplo" markers and no purchase links, footer "Volver arriba" + in-page nav.
+- Work-unit commits: `8aceb46` T1 heading, `2be3d92` T2 seasons, `324195d` T3 books, `7a37de5` T4 footer. RDD assessment of that range: medium / `slice_budget_reached`; START consent envelope was returned and superseded by later user-requested changes before any answer — no review started.
+- `b917255` removed the decorative SeasonTimeline track line per user request; `2de3148` switched the roster to a grid (tracked in `odd/tasks/characters-grid-layout.md`).
+- Browser visual acceptance of T1–T4 still pending; no browser connected.
 
 ## Next Step
-Delegate T1–T4 to one writer; verify; commit per task.
+Browser visual acceptance of the polish slice; RDD assessment continues on the current boundary.
