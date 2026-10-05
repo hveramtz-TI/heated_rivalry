@@ -61,8 +61,8 @@ The user approved proceeding from the reference-derived design document to imple
 - `npm run lint`: only the known out-of-scope `Videobackground.tsx` findings remain (empty-object type error and unused `props` warning); the previous unused `Shield` warning in `CharacterCard.tsx` is gone.
 - Independent read-only verification: PASS WITH NOTES; no candidate-caused blocker or should-fix finding. Browser visual and runtime image-loading checks were not run.
 - `gentle-ai review assess` returned high/unassessable because pre-existing untracked files were undeclared. RDD is globally off, so no review lifecycle or consent was started; the independent technical verifier covered the high verification tier.
-- Work-unit commit identity pending.
+- Work-unit commit: `b977e00ff0645c90057df062d2ac7ac585ac9180` (`feat(characters): restore collectible slab cards`).
 - Design source: `CHARACTER-CARDS-DESIGN.md`; reference image: `frontend/public/referenciaCard.jpg`.
 
 ## Next Step
-Commit only the three authorized source files and this task document, then record the commit identity here and in the Engram mirror.
+Visual-check the roster in the browser when available. RDD remains globally off; no review receipt or approval is claimed.
