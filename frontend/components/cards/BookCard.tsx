@@ -17,11 +17,11 @@ const PUBLISHED_DATE_FORMATTER = new Intl.DateTimeFormat("es", {
   year: "numeric",
 });
 
-/** Spanish-formatted publication date, or the shared label when absent/invalid. */
-function formatPublished(published: string | undefined): string {
-  if (!published) return MISSING_CONTENT_LABEL;
+/** Spanish-formatted publication date, or `undefined` when absent/invalid. */
+function formatPublished(published: string | undefined): string | undefined {
+  if (!published) return undefined;
   const parsed = new Date(published);
-  if (Number.isNaN(parsed.getTime())) return MISSING_CONTENT_LABEL;
+  if (Number.isNaN(parsed.getTime())) return undefined;
   return PUBLISHED_DATE_FORMATTER.format(parsed);
 }
 
@@ -32,17 +32,21 @@ interface BookCardProps {
 }
 
 /**
- * Catalog card (book-catalog spec): cover, title, metadata and description.
- * A retailer link renders if and only if a validated `purchaseUrls` entry
- * exists in JSON — the URL comes exclusively from the loader and is never
- * built, guessed, or templated here (decision 4). Every empty slot (cover,
- * title, metadata, description) falls back to the shared Spanish label.
+ * Catalog card (book-catalog spec, T3 polish): cover, title, metadata and
+ * description. A retailer link renders if and only if a validated
+ * `purchaseUrls` entry exists in JSON — the URL comes exclusively from the
+ * loader and is never built, guessed, or templated here (decision 4). Optional
+ * fields (cover, published date, pages, description) are omitted or shown as a
+ * decorative placeholder instead of repeating a missing-content label; only
+ * the required title keeps the shared Spanish label.
  */
 export default function BookCard({ book, onCoverLoad }: BookCardProps) {
   const [coverFailed, setCoverFailed] = useState(false);
   const cover = book.cover;
   const showCover = cover !== undefined && !coverFailed;
   const purchaseLinks = book.purchaseUrls ?? [];
+  const published = formatPublished(book.published);
+  const hasMeta = published !== undefined || book.pages !== undefined;
 
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5">
@@ -60,8 +64,12 @@ export default function BookCard({ book, onCoverLoad }: BookCardProps) {
             onError={() => setCoverFailed(true)}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center px-4 text-center text-sm text-white/70">
-            {MISSING_CONTENT_LABEL}
+          <div
+            aria-hidden="true"
+            className="relative h-full w-full overflow-hidden bg-gradient-to-br from-white/[0.07] via-black to-black"
+          >
+            <span className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-[#FF002A]/50 via-white/20 to-[#002AFF]/50" />
+            <span className="absolute bottom-5 left-1/2 h-1.5 w-2/5 -translate-x-1/2 rounded-full bg-white/10" />
           </div>
         )}
       </div>
@@ -71,18 +79,18 @@ export default function BookCard({ book, onCoverLoad }: BookCardProps) {
           {book.title ?? MISSING_CONTENT_LABEL}
         </h3>
 
-        <p className="text-sm text-white/70">
-          {formatPublished(book.published)}
-        </p>
-        <p className="text-sm text-white/70">
-          {book.pages !== undefined
-            ? `${book.pages} páginas`
-            : MISSING_CONTENT_LABEL}
-        </p>
+        {hasMeta ? (
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/70">
+            {published ? <p>{published}</p> : null}
+            {book.pages !== undefined ? <p>{`${book.pages} páginas`}</p> : null}
+          </div>
+        ) : null}
 
-        <p className="text-sm leading-relaxed text-white/80">
-          {book.description ?? MISSING_CONTENT_LABEL}
-        </p>
+        {book.description ? (
+          <p className="text-sm leading-relaxed text-white/80">
+            {book.description}
+          </p>
+        ) : null}
 
         {purchaseLinks.length > 0 && (
           <ul className="mt-auto flex flex-col gap-2 pt-2">
@@ -92,7 +100,7 @@ export default function BookCard({ book, onCoverLoad }: BookCardProps) {
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex rounded text-sm font-semibold text-white underline decoration-white/40 underline-offset-4 transition-colors hover:decoration-white focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:outline-none"
+                  className="inline-flex min-h-11 items-center rounded text-sm font-semibold text-white underline decoration-white/40 underline-offset-4 transition-colors hover:decoration-white focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:outline-none"
                 >
                   {`Comprar en ${link.provider}`}
                   <span className="sr-only"> (enlace externo)</span>
