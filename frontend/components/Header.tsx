@@ -1,9 +1,10 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import VideoBackground from "./Videobackground";
+import { useIsMobile } from "@/hooks/mobileResponsive";
 
 const Header = () => {
   const videoBgRef = useRef<HTMLDivElement>(null);
@@ -12,6 +13,26 @@ const Header = () => {
   const navRef = useRef<HTMLElement>(null);
   const navVisibleRef = useRef(false);
   const navHidePendingRef = useRef(false);
+  const isMobile = useIsMobile(640);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [menuOpen]);
+
+  const handleLogoPress = () => {
+    if (!isMobile) return;
+    setMenuOpen((open) => !open);
+  };
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -171,14 +192,29 @@ const Header = () => {
       </div>
 
       <h1 className="absolute inset-0 m-0 flex items-center justify-center">
-        <Image
-          ref={logoRef}
-          src="/logo.png"
-          alt="Heated Rivalry"
-          width={500}
-          height={500}
-          className="absolute"
-        />
+        <button
+          type="button"
+          onClick={handleLogoPress}
+          aria-label={
+            isMobile
+              ? menuOpen
+                ? "Cerrar navegación"
+                : "Abrir navegación"
+              : "Heated Rivalry"
+          }
+          aria-expanded={isMobile ? menuOpen : undefined}
+          aria-controls={isMobile ? "mobile-nav" : undefined}
+          className="flex cursor-pointer items-center justify-center rounded-lg border-0 bg-transparent p-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-200 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+        >
+          <Image
+            ref={logoRef}
+            src="/logo.png"
+            alt="Heated Rivalry"
+            width={500}
+            height={500}
+            className="relative"
+          />
+        </button>
       </h1>
 
       <nav
@@ -186,7 +222,7 @@ const Header = () => {
         aria-hidden="true"
         aria-label="Navegación principal"
         inert
-        className="invisible pointer-events-none absolute right-3 top-1/2 flex -translate-y-1/2 flex-col gap-2 text-[10px] font-semibold text-white sm:right-6 sm:flex-row sm:gap-4 sm:text-sm"
+        className="invisible pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 flex-col gap-2 text-[10px] font-semibold text-white sm:right-6 sm:flex sm:flex-row sm:gap-4 sm:text-sm"
       >
         <a
           className="inline-flex min-h-11 items-center justify-center rounded px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-200"
@@ -207,6 +243,36 @@ const Header = () => {
           Libros
         </a>
       </nav>
+
+      {isMobile && menuOpen ? (
+        <nav
+          id="mobile-nav"
+          aria-label="Navegación móvil"
+          className="fixed inset-x-0 top-[100px] z-100 flex flex-col gap-2 border-b border-white/15 bg-black/95 px-6 py-5 backdrop-blur-sm"
+        >
+          <a
+            className="inline-flex min-h-11 items-center rounded px-3 py-2 text-sm font-semibold tracking-widest text-white uppercase transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-200"
+            href="#personajes"
+            onClick={() => setMenuOpen(false)}
+          >
+            Personajes
+          </a>
+          <a
+            className="inline-flex min-h-11 items-center rounded px-3 py-2 text-sm font-semibold tracking-widest text-white uppercase transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-200"
+            href="#temporadas"
+            onClick={() => setMenuOpen(false)}
+          >
+            Temporadas
+          </a>
+          <a
+            className="inline-flex min-h-11 items-center rounded px-3 py-2 text-sm font-semibold tracking-widest text-white uppercase transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-200"
+            href="#libros"
+            onClick={() => setMenuOpen(false)}
+          >
+            Libros
+          </a>
+        </nav>
+      ) : null}
     </header>
   );
 };
