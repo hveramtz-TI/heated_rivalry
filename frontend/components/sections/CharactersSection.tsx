@@ -16,7 +16,7 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  * 55vh offset contract transferred out of `Header.tsx` (design D6): the
  * ScrollTrigger watches the unmarginated section root while the margin tween
  * runs on an inner wrapper, which avoids the self-referential progress loop a
- * margin on the trigger element would create. Each grid item wrapper also owns
+ * margin on the trigger element would create. Each roster item wrapper also owns
  * its own entrance/exit ScrollTrigger, so items animate as they enter and leave
  * the viewport instead of in one reveal at the section top.
  */
@@ -163,14 +163,14 @@ export default function CharactersSection() {
       <div ref={offsetRef}>
         <div
           ref={gridRef}
-          className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-10 px-6 py-24 sm:grid-cols-2 md:px-8 lg:grid-cols-3 lg:gap-12"
+          className="flex w-full flex-col gap-[15px] p-8"
         >
           {/* Visible section heading: gives the roster an h2 between the page
-              h1 and the card h3s. `col-span-full` keeps the heading across all
-              grid columns; the heading sits inside the animated offset wrapper,
-              and the per-item triggers measure live item bounds, so the extra
-              height is included on refresh. */}
-          <header className="col-span-full flex flex-col gap-4">
+              h1 and the card h3s. The heading sits first in the flex column;
+              it lives inside the animated offset wrapper, and the per-item
+              triggers measure live item bounds, so the extra height is
+              included on refresh. */}
+          <header className="flex flex-col gap-4">
             <h2
               id="personajes-heading"
               className="text-4xl font-bold text-white md:text-6xl"
@@ -183,19 +183,22 @@ export default function CharactersSection() {
             </p>
           </header>
 
-          {/* Roster grid: one cell per character; `h-full` stretches each card
-              to the row height so items stay aligned regardless of bio length. */}
-          {characters.map((character, index) => (
-            <div
-              key={character.id}
-              className="h-full"
-              ref={(element) => {
-                cardRefs.current[index] = element;
-              }}
-            >
-              <CharacterCard character={character} eager={index === 0} number={index + 1} />
-            </div>
-          ))}
+          {/* Roster row: one flex item per character; `h-full` stretches each
+              card to the row height so items stay aligned regardless of bio
+              length. Mobile stacks in a column; `md`+ shares one row. */}
+          <div className="flex flex-col gap-[15px] md:flex-row">
+            {characters.map((character, index) => (
+              <div
+                key={character.id}
+                className="h-full md:min-w-0 md:flex-1"
+                ref={(element) => {
+                  cardRefs.current[index] = element;
+                }}
+              >
+                <CharacterCard character={character} eager={index === 0} number={index + 1} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
