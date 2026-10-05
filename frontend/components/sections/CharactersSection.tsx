@@ -155,7 +155,7 @@ export default function CharactersSection() {
     <section
       ref={rootRef}
       id="personajes"
-      aria-label="Personajes"
+      aria-labelledby="personajes-heading"
       className="scroll-mt-28 overflow-hidden"
     >
       {/* Animated spacer wrapper: only this element carries the transferred
@@ -165,6 +165,23 @@ export default function CharactersSection() {
           ref={gridRef}
           className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 py-24 md:gap-24 md:px-8"
         >
+          {/* Visible section heading: gives the roster an h2 between the page
+              h1 and the card h3s. The heading sits inside the animated offset
+              wrapper; the T6 per-row triggers measure live row bounds, so the
+              extra height is included on refresh. */}
+          <header className="flex flex-col gap-4">
+            <h2
+              id="personajes-heading"
+              className="text-4xl font-bold text-white md:text-6xl"
+            >
+              Personajes
+            </h2>
+            <p className="max-w-prose text-base text-white/70 md:text-lg">
+              Las figuras que protagonizan la rivalidad dentro y fuera de la
+              pista.
+            </p>
+          </header>
+
           {characters.map((character, index) => (
             <div
               key={character.id}
