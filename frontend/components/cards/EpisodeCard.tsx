@@ -17,13 +17,23 @@ const AIR_DATE_FORMATTER = new Intl.DateTimeFormat("es", {
   year: "numeric",
 });
 
-/** Spanish-formatted air date, or the shared label when absent/invalid. */
-function formatAirDate(airDate: string | undefined): string {
-  if (!airDate) return MISSING_CONTENT_LABEL;
+/**
+ * Spanish-formatted air date, or `undefined` when absent/invalid so the caller
+ * omits the line entirely instead of printing a missing-content label.
+ */
+function formatAirDate(airDate: string | undefined): string | undefined {
+  if (!airDate) return undefined;
   const parsed = new Date(airDate);
-  if (Number.isNaN(parsed.getTime())) return MISSING_CONTENT_LABEL;
+  if (Number.isNaN(parsed.getTime())) return undefined;
   return AIR_DATE_FORMATTER.format(parsed);
 }
+
+/**
+ * Faint diagonal texture for the artwork placeholder (decorative only, same
+ * inline-style technique as the CharacterCard barcode).
+ */
+const PLACEHOLDER_TEXTURE =
+  "repeating-linear-gradient(115deg, transparent 0px, transparent 14px, rgba(255,255,255,0.04) 14px, rgba(255,255,255,0.04) 15px)";
 
 interface EpisodeCardProps {
   episode: Episode;
@@ -34,9 +44,11 @@ interface EpisodeCardProps {
 }
 
 /**
- * Fixed-width snap child of the episode rail (design D5). Every slot reserves
- * its space and falls back to the shared Spanish missing-content label; a
- * remote artwork whose request fails flips to the same label panel (design D8).
+ * Fixed-width snap child of the episode rail (design D5, T2 polish). Absent
+ * artwork renders a decorative placeholder built around the episode number
+ * instead of a missing-content panel, and a remote artwork whose request fails
+ * falls back to the same placeholder. Optional air date and synopsis lines are
+ * omitted when absent; only the required title keeps the shared Spanish label.
  * Data arrives strictly by props — no `@/data` import except the label.
  */
 export default function EpisodeCard({
@@ -47,6 +59,11 @@ export default function EpisodeCard({
   const [artworkFailed, setArtworkFailed] = useState(false);
   const artwork = episode.artwork;
   const showArtwork = artwork !== undefined && !artworkFailed;
+  const airDate = formatAirDate(episode.airDate);
+  const hasNumber = episode.number !== undefined;
+  const placeholderNumber = hasNumber
+    ? String(episode.number).padStart(2, "0")
+    : undefined;
 
   return (
     <article
@@ -67,25 +84,43 @@ export default function EpisodeCard({
             onError={() => setArtworkFailed(true)}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center px-4 text-center text-sm text-white/70">
-            {MISSING_CONTENT_LABEL}
+          <div
+            aria-hidden="true"
+            className="relative flex h-full w-full items-center justify-center overflow-hidden"
+          >
+            <span className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+            <span
+              className="absolute inset-0"
+              style={{ backgroundImage: PLACEHOLDER_TEXTURE }}
+            />
+            {/* Accent rule echoes the rivalry palette without claiming an
+                accent per episode. */}
+            <span className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-[#FF002A]/60 via-white/30 to-[#002AFF]/60" />
+            <span className="absolute right-0 bottom-0 h-px w-full bg-gradient-to-r from-[#002AFF]/60 via-white/30 to-[#FF002A]/60" />
+            {placeholderNumber ? (
+              <span className="relative font-mono text-6xl leading-none font-bold tracking-tight text-white/20 md:text-7xl">
+                {placeholderNumber}
+              </span>
+            ) : null}
           </div>
         )}
       </div>
 
       <div className="flex flex-1 flex-col gap-3 p-5">
-        <p className="text-xs font-semibold tracking-widest text-white/60 uppercase">
-          {episode.number !== undefined
-            ? `Episodio ${episode.number}`
-            : MISSING_CONTENT_LABEL}
-        </p>
+        {hasNumber ? (
+          <p className="text-xs font-semibold tracking-widest text-white/60 uppercase">
+            {`Episodio ${episode.number}`}
+          </p>
+        ) : null}
         <h3 className="text-xl font-bold text-white">
           {episode.title ?? MISSING_CONTENT_LABEL}
         </h3>
-        <p className="text-sm text-white/70">{formatAirDate(episode.airDate)}</p>
-        <p className="text-sm leading-relaxed text-white/80">
-          {episode.synopsis ?? MISSING_CONTENT_LABEL}
-        </p>
+        {airDate ? <p className="text-sm text-white/70">{airDate}</p> : null}
+        {episode.synopsis ? (
+          <p className="text-sm leading-relaxed text-white/80">
+            {episode.synopsis}
+          </p>
+        ) : null}
       </div>
     </article>
   );

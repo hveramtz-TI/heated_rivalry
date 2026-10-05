@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import type { Season } from "@/types/content";
-import { MISSING_CONTENT_LABEL } from "@/data/ui";
 import { getPrefersReducedMotion } from "@/lib/motion";
 import EpisodeCard from "@/components/cards/EpisodeCard";
 
@@ -18,8 +17,9 @@ interface EpisodeRailProps {
 /** 1px tolerance guards subpixel `scrollLeft` on zoomed displays (design D5). */
 const BOUNDARY_TOLERANCE_PX = 1;
 
+/** 44px (h-11) square controls satisfy the touch-target floor (T2). */
 const CONTROL_CLASSES =
-  "inline-flex h-10 w-10 touch-manipulation items-center justify-center rounded-full border border-white/30 bg-white/5 text-white transition-colors hover:bg-white/15 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40";
+  "inline-flex h-11 w-11 touch-manipulation items-center justify-center rounded-full border border-white/30 bg-white/5 text-white transition-colors hover:bg-white/15 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40";
 
 /**
  * Native-overflow episode rail (design D5). Scrolling stays browser-native —
@@ -130,8 +130,13 @@ export default function EpisodeRail({
         className="scroll-pr-6 snap-x snap-mandatory overflow-x-auto overscroll-x-contain pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
       >
         {isEmpty ? (
-          <div className="flex min-h-[220px] w-full items-center justify-center rounded-2xl border border-dashed border-white/20 px-6 text-center text-sm text-white/70">
-            {MISSING_CONTENT_LABEL}
+          <div className="flex min-h-[220px] w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-white/20 px-6 text-center">
+            <p className="text-base font-semibold text-white">
+              Esta temporada todavía no tiene episodios
+            </p>
+            <p className="text-sm text-white/60">
+              Vuelve pronto para ver las novedades.
+            </p>
           </div>
         ) : (
           <div ref={rowRef} className="flex gap-6 pr-6">

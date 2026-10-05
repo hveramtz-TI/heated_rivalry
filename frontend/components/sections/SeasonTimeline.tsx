@@ -53,7 +53,9 @@ export default function SeasonTimeline({
                   <span className="ml-2 text-white/40">{season.year}</span>
                 ) : null}
                 {season.status === "upcoming" ? (
-                  <span className="ml-2 text-white/40">Próximamente</span>
+                  <span className="ml-2 rounded-full border border-white/25 px-2 py-0.5 text-xs font-medium tracking-normal text-white/70 normal-case">
+                    Próximamente
+                  </span>
                 ) : null}
               </span>
             </li>
