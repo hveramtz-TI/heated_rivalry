@@ -48,6 +48,9 @@ const Header = () => {
     };
 
     const nav = navRef.current;
+    const logo = logoRef.current;
+    const header = headerRef.current;
+    const videoBg = videoBgRef.current;
     const handleNavFocusOut = (event: FocusEvent) => {
       if (
         event.relatedTarget instanceof Node &&
@@ -69,11 +72,11 @@ const Header = () => {
 
     const setupAnimated = () => {
       // 1) Define estado inicial para evitar saltos
-      gsap.set(videoBgRef.current, { filter: "brightness(1) blur(0px)" });
+      gsap.set(videoBg, { filter: "brightness(1) blur(0px)" });
 
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: headerRef.current,
+          trigger: header,
           start: "1% top",
           end: "bottom 50%",
           scrub: true,
@@ -82,12 +85,12 @@ const Header = () => {
       });
 
       // 2) Animaciones principales al inicio
-      tl.to(logoRef.current, {
+      tl.to(logo, {
         height: "80px",
         width: "150px",
         ease: "power1.out",
       }, 0)
-      .to(headerRef.current, {
+      .to(header, {
         height: "100px",
         ease: "power1.out",
         top: 0,
@@ -95,11 +98,11 @@ const Header = () => {
         right: 0,
         margin: "0 auto",
       }, 0)
-      .to(videoBgRef.current, {
+      .to(videoBg, {
         height: "100px",
         ease: "power1.out",
       }, 0)
-      .to(videoBgRef.current, {
+      .to(videoBg, {
         filter: "brightness(0) blur(0px)",
         ease: "none",
         duration: 0.2,
@@ -112,29 +115,29 @@ const Header = () => {
       return () => {
         tl.scrollTrigger?.kill();
         tl.kill();
-        gsap.set([logoRef.current, headerRef.current, videoBgRef.current], {
+        gsap.set([logo, header, videoBg], {
           clearProps: "all",
         });
       };
     };
 
     const setupReduced = () => {
-      gsap.set(logoRef.current, { width: "150px", height: "80px" });
-      gsap.set(headerRef.current, {
+      gsap.set(logo, { width: "150px", height: "80px" });
+      gsap.set(header, {
         height: "100px",
         top: 0,
         left: 0,
         right: 0,
         margin: "0 auto",
       });
-      gsap.set(videoBgRef.current, {
+      gsap.set(videoBg, {
         height: "100px",
         filter: "brightness(0) blur(0px)",
       });
       setCompactNavVisible(true);
 
       return () => {
-        gsap.set([logoRef.current, headerRef.current, videoBgRef.current], {
+        gsap.set([logo, header, videoBg], {
           clearProps: "all",
         });
       };
