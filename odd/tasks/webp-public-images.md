@@ -21,6 +21,8 @@ The public asset directory contains JPEG and PNG files, and application referenc
 
 ## Tasks
 - [x] T1 — Convert local raster assets, update verified references, and validate the build.
+- [x] T2 — Localize the character shields as WebP after the remote hosts proved unusable.
+- [x] T3 — Add the six Mercado Libre purchase links to the book catalog in file order.
 
 ## Route and delivery
 - **Route:** delegated direct; the conversion spans multiple assets and application references.
@@ -57,14 +59,26 @@ The public asset directory contains JPEG and PNG files, and application referenc
 ## Follow-ups detected (not part of this task, evidence recorded)
 - Remote team shields do not render: `static.wikia.nocookie.net` returns HTTP 403 both through the Next image optimizer and from a direct request with a browser user-agent. This is pre-existing — the `Montreal_Metros_Logo.png` and `Boston_Raiders_Logo.png` URLs already in `HEAD` fail identically, so Hollander and Rozanov shields were already broken.
 - Remote flag shields are rejected by the optimizer with "image type is not allowed" (`image/svg+xml` needs `images.dangerouslyAllowSVG` plus a CSP); also pre-existing for the Canada and Russia flags in `HEAD`.
-- `characters.json` line 47 pointed at the wiki *page* `https://game-changers-series.fandom.com/wiki/New_York_Admirals`, not an image, and that hostname is not in `next.config.ts` `images.domains`. That raised the runtime error `Invalid src prop ... hostname "game-changers-series.fandom.com" is not configured`. Fixed to the real file URL reported by the wiki API (`.../images/4/4e/New_York_Admirals_Logo.png/revision/latest?cb=20260721134108`), which matches the pattern of the other two characters. The fix lives in the user's uncommitted Hunter block and was left uncommitted on purpose.
-- Still-unmapped image references (no file exists, nothing was guessed): five remaining `/images/books/*.jpg` covers, and `/hunterCard.jpg` inside the user-added Hunter entry.
+- `characters.json` line 47 pointed at the wiki *page* `https://game-changers-series.fandom.com/wiki/New_York_Admirals`, not an image, and that hostname is not in `next.config.ts` `images.domains`. That raised the runtime error `Invalid src prop ... hostname "game-changers-series.fandom.com" is not configured`. The real file URL was taken from the wiki MediaWiki API (`api.php?action=query&list=allimages&aiprefix=New%20York%20Admirals`).
 - The three UUID-named images in `frontend/public/` (3880x2400, 1159x1545, 1032x1548) are converted but referenced by nothing; their intended role is unknown.
+
+## T2 — Localize the character shields (user chose option A)
+- Six WebP shields now live in `frontend/public/shields/`: `montreal-metros`, `boston-raiders`, `new-york-admirals`, `flag-canada`, `flag-russia`, `flag-us`. 24.3 KB total (86 KB for the biggest remote original), sized at 160 px because the cards render them at 32 px.
+- The three team logos were already served as WebP by the CDN; they only download when the request carries a browser User-Agent **and** a `Referer` from the fandom wiki page. Without `Referer` every request returns HTTP 403, which is what made the images look unreachable earlier.
+- The three flags are vector SVGs, so they were rasterized with `rsvg-convert` at 160 px before encoding to WebP. Wikimedia thumbnail URLs (`/thumb/.../320px-...png`) return HTTP 400 here; the raw `.svg` path works.
+- Render quality was checked, not assumed: the US canton mean color is navy and contains white star pixels, and the stripe rows alternate red/white; the Russia bands sample white/blue/red top to bottom.
+- `characters.json` now uses the six local paths; no `next/image` src points at a remote host any more, the optimizer returns 200 for all six, and the page renders with zero `Invalid src prop` and zero `Runtime Error`.
+- Dead configuration left untouched on purpose: `frontend/next.config.ts` still declares `images.domains` for `static.wikia.nocookie.net` and `upload.wikimedia.org` with no remaining consumer, and Next 16.3.6 deprecates `domains` in favour of `remotePatterns`.
+
+## T3 — Book purchase links
+- `frontend/data/books.json` carries one `Mercado Libre` entry per book, assigned in file order: `game-changer` → `meli.la/1iYhWP6`, `heated-rivalry` → `meli.la/14m9Fvp`, `tough-guy` → `meli.la/2WKW4NE`, `common-goal` → `meli.la/2Pd1ikM`, `role-model` → `meli.la/2qFXn1g`, `the-long-game` → `meli.la/2oUVFd5`.
+- Verified in rendered HTML: six `Comprar en Mercado Libre` anchors, each with `target="_blank"` and `rel="noopener noreferrer"`, matching the existing `RetailerLink` shape in `frontend/types/books.ts`.
 
 ## Runtime verification
 - Live `next dev` on port 3000 (the user's own server): `GET /` returns 200, the Admirals logo URL appears in the HTML, `Invalid src prop` and `Runtime Error` counts are 0.
+- All six `/shields/*.webp` paths return 200 both directly and through `/_next/image`.
 - `GET /images/books/game-changer.webp` returns 200, and `/_next/image?url=%2Fimages%2Fbooks%2Fgame-changer.webp` returns 200.
-- `GET /hunterCard.jpg` returns 404, confirming that reference is dangling.
+- Remaining references audited rather than guessed: Hunter's `cardArt` now reads `/hunter.webp` (the earlier `/hunterCard.jpg` value no longer exists in the file, and no such file ever existed in `public/`), so no character path dangles. The `books.example.json` placeholder covers still point to `/images/books/ejemplo-portada-*.jpg`, which never existed and is only reachable through the `BookCard` `onError` fallback while `books.json` stays empty.
 
 ## Next Step
-Decide how the character shields should be served (local WebP copies of the logos and flags, `unoptimized` remote images, or a graceful `onError` fallback), then supply the missing Hunter card art and remaining book covers so those references can be converted the same way.
+Commit `frontend/data/characters.json` and `frontend/data/books.json` once the user is happy with the catalog content, and decide separately whether to drop the now-unused `images.domains` block from `frontend/next.config.ts`.
