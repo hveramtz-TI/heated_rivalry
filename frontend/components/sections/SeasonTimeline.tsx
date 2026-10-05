@@ -52,6 +52,9 @@ export default function SeasonTimeline({
                 {season.year ? (
                   <span className="ml-2 text-white/40">{season.year}</span>
                 ) : null}
+                {season.status === "upcoming" ? (
+                  <span className="ml-2 text-white/40">Próximamente</span>
+                ) : null}
               </span>
             </li>
           );

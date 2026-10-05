@@ -67,6 +67,7 @@ export interface Season {
   id: string;
   name?: string;
   year?: string;
+  status?: "upcoming";
   /** invalid/absent → [] (never throws) */
   episodes: Episode[];
 }

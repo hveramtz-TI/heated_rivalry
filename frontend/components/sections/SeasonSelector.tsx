@@ -58,14 +58,24 @@ export default function SeasonSelector({
                   name="season-selector"
                   value={season.id}
                   checked={season.id === selectedId}
+                  disabled={season.status === "upcoming"}
                   onChange={() => onSelect(season.id)}
                   className="peer sr-only"
                 />
                 <label
                   htmlFor={optionId}
-                  className="inline-flex cursor-pointer items-center rounded-full border border-white/30 bg-white/5 px-5 py-2 text-sm font-semibold tracking-widest text-white uppercase transition-colors hover:bg-white/15 peer-checked:border-white peer-checked:bg-white peer-checked:text-black peer-focus-visible:ring-2 peer-focus-visible:ring-white peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black focus-visible:outline-none"
+                  className={`inline-flex items-center rounded-full border border-white/30 bg-white/5 px-5 py-2 text-sm font-semibold tracking-widest text-white uppercase transition-colors peer-checked:border-white peer-checked:bg-white peer-checked:text-black peer-focus-visible:ring-2 peer-focus-visible:ring-white peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black focus-visible:outline-none ${
+                    season.status === "upcoming"
+                      ? "cursor-not-allowed opacity-60"
+                      : "cursor-pointer hover:bg-white/15"
+                  }`}
                 >
                   {season.name ?? MISSING_CONTENT_LABEL}
+                  {season.status === "upcoming" ? (
+                    <span className="ml-2 text-xs font-medium normal-case tracking-normal text-white/70">
+                      Próximamente
+                    </span>
+                  ) : null}
                 </label>
               </div>
             );

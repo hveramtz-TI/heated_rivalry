@@ -42,6 +42,7 @@ function normalizeSeason(raw: unknown, index: number): Season {
     id: asString(raw.id) ?? `season-${index}`,
     name: asString(raw.name),
     year: asString(raw.year),
+    status: raw.status === "upcoming" ? "upcoming" : undefined,
     episodes: rawEpisodes.map((episode, i) => normalizeEpisode(episode, i)),
   };
 }
