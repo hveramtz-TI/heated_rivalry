@@ -54,7 +54,8 @@ The requested rail better presents episode cards as a sequence, while the suppli
 - `npm run lint`: failed on the existing `components/Videobackground.tsx` empty-object type error, with its unused `props` warning and an unrelated unused `Shield` warning in `components/CharacterCard.tsx`; neither file is in scope.
 - Browser-based visual, keyboard, and contrast checks were not run.
 - Work-unit commit: `a00577310a289989f9d2316d73150bb4453bdc2e` (`feat(seasons): add episode rail and image background`).
-- RDD is on globally. Committed-only assessment with base `c1648461` returned `review_due: true` and `risk: high`/`unassessable` because untracked files were undeclared. The subsequent exact-lineage preflight did not begin: Git could not resolve `c1648461^{tree}`, returned `git_command_failed`, `mutation_outcome: not_started`, and `next_action: stop`. No review lineage or receipt was created.
+- RDD was on globally. The initial committed-only assessment with base `c1648461` failed (unresolvable revision, `git_command_failed`, `next_action: stop`). The base was rebuilt as `bc1ddb8` with committed-only and untracked excluded: medium risk, `review_due: true` (`slice_budget_reached`), covering `a005773`, `dcfe21f`, and `c0f1691`; target `sha256:1d22c1d5ce4ec14a2fc7a4981f07fdf1b227b2469ae552d63c2d0e9e9285c436`, lineage `review-29f86faa4041b9f2`.
+- START returned a `consent/v3` envelope; this runtime lacks the native consent UI, so no continuation was invoked. The user then disabled receipt-driven development globally (the envelope's own off-path). No review record or receipt exists.
 
 ## Next Step
-Resolve the valid review base and follow the repository's native review policy before treating RDD as complete. Do not claim an approval or receipt for this commit.
+No open review work for this commit. Delivery follows ordinary repository policy; `gentle-ai review mode enable` would be required to resume any review lifecycle.

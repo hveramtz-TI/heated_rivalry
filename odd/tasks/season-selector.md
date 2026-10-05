@@ -49,7 +49,9 @@ User feedback after accepting the rail and background: the season selector is mi
 - `npm run build`: passed (compiled, TypeScript, 4/4 static pages).
 - `npm run lint`: exact known baseline, 1 error and 2 warnings, all out of scope (`Videobackground.tsx` type error and unused `props`; unused `Shield` in `CharacterCard.tsx`); no findings in the edited files.
 - Browser-based keyboard and visual checks were not run.
-- Receipt-driven development: on (global); committed assessment and commit identity pending.
+- Receipt-driven development: on (global). Committed assessment for base `bc1ddb8` returned medium risk, `review_due: true` (`slice_budget_reached`), 5 files and 487 changed lines with untracked files excluded.
+- The exact preflight froze target `sha256:1d22c1d5ce4ec14a2fc7a4981f07fdf1b227b2469ae552d63c2d0e9e9285c436` and START returned a `consent/v3` envelope for lineage `review-29f86faa4041b9f2` with choices `granted` and `declined`.
+- This runtime does not expose the native consent question UI, so no continuation was invoked; the envelope was relayed to the user. The user then disabled receipt-driven development globally (the envelope's own off-path), so the pending consent will not be resolved and no review record exists. The candidate had covered both recent work units (`a005773` rail and background, `c0f1691` selector) plus the docs commits between.
 
 ## Next Step
-Delegate T1, verify the build, commit the work unit, then record RDD outcome and commit identity here and in the Engram mirror.
+No open review work. Delivery follows ordinary repository policy; `gentle-ai review mode enable` would be required to resume any review lifecycle.
