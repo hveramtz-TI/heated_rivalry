@@ -20,7 +20,7 @@ The season browser currently has no catalog entries. The user supplied Spanish e
 - Project has no declared frontend test or typecheck script; do not claim standalone test coverage.
 
 ## Tasks
-- [ ] T1 — Populate Season 1 episodes and represent confirmed Season 2 as upcoming across typed data, loader, selector, and timeline.
+- [x] T1 — Populate Season 1 episodes and represent confirmed Season 2 as upcoming across typed data, loader, selector, and timeline.
 
 ## Route and delivery
 - **Route:** delegated direct; five non-trivial implementation files require one writer.
@@ -42,11 +42,12 @@ The season browser currently has no catalog entries. The user supplied Spanish e
 - Focused JSON/loader/SSR assertions for episode order, exact copy, Season 2 disabled/upcoming state, and Season 1 default selection.
 
 ## Progress / Evidence
-- T1 implementation complete; commit and RDD assessment pending.
+- T1 complete. Work-unit commit: `5993add` (`feat(seasons): add episode catalog and upcoming state`).
+- RDD: `gentle-ai review assess --base-ref a68c849 --committed-only --untracked-scope=exclude` → risk `medium`, 120 changed lines, `review_due: false` (`under_budget`); stays pending in the slice. Untracked files excluded per user answer "ninguno".
 - Writer verification: `npm run build` passed; inline JSON checks confirmed exact episode content/order, Season 2 upcoming state, and absence of unapproved dates/artwork; built-HTML checks confirmed all six entries, disabled upcoming option, and Season 1 selection.
 - Parent spot-check: `npm run build` passed again; Next.js 16.3.6 warned that `images.domains` is deprecated. Generated build writes stayed under `frontend/.next/`.
 - `npm run lint` before and after implementation produced the same unrelated baseline: error `no-empty-object-type` in `frontend/components/Videobackground.tsx:3` and unused `props` warning at line 5.
 - No standalone tests run; frontend package declares no test or typecheck script.
 
 ## Next Step
-Record the work-unit commit and RDD assessment outcome. Browser visual acceptance remains a separate user-facing follow-up.
+Done. Browser visual acceptance remains a separate user-facing follow-up; follow-on UI polish tracked in `odd/tasks/sections-footer-polish.md`.
