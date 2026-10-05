@@ -65,51 +65,96 @@ const Header = () => {
 
     nav?.addEventListener("focusout", handleNavFocusOut);
 
-    // 1) Define estado inicial para evitar saltos
-    gsap.set(videoBgRef.current, { filter: "brightness(1) blur(0px)" });
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: headerRef.current,
-        start: "1% top",
-        end: "bottom 50%",
-        scrub: true,
-        onUpdate: (self) => setCompactNavVisible(self.progress >= 0.999),
-      },
-    });
+    const setupAnimated = () => {
+      // 1) Define estado inicial para evitar saltos
+      gsap.set(videoBgRef.current, { filter: "brightness(1) blur(0px)" });
 
-    // 2) Animaciones principales al inicio
-    tl.to(logoRef.current, {
-      height: "80px",
-      width: "150px",
-      ease: "power1.out",
-    }, 0)
-    .to(headerRef.current, {
-      height: "100px",
-      ease: "power1.out",
-      top: 0,
-      left: 0,
-      right: 0,
-      margin: "0 auto",
-    }, 0)
-    .to(videoBgRef.current, {
-      height: "100px",
-      ease: "power1.out",
-    }, 0)
-    .to(videoBgRef.current, {
-      filter: "brightness(0) blur(0px)",
-      ease: "none",
-      duration: 0.2,
-    }, 0);
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: headerRef.current,
+          start: "1% top",
+          end: "bottom 50%",
+          scrub: true,
+          onUpdate: (self) => setCompactNavVisible(self.progress >= 0.999),
+        },
+      });
 
-    setCompactNavVisible(
-      Boolean(tl.scrollTrigger && tl.scrollTrigger.progress >= 0.999),
-    );
+      // 2) Animaciones principales al inicio
+      tl.to(logoRef.current, {
+        height: "80px",
+        width: "150px",
+        ease: "power1.out",
+      }, 0)
+      .to(headerRef.current, {
+        height: "100px",
+        ease: "power1.out",
+        top: 0,
+        left: 0,
+        right: 0,
+        margin: "0 auto",
+      }, 0)
+      .to(videoBgRef.current, {
+        height: "100px",
+        ease: "power1.out",
+      }, 0)
+      .to(videoBgRef.current, {
+        filter: "brightness(0) blur(0px)",
+        ease: "none",
+        duration: 0.2,
+      }, 0);
+
+      setCompactNavVisible(
+        Boolean(tl.scrollTrigger && tl.scrollTrigger.progress >= 0.999),
+      );
+
+      return () => {
+        tl.scrollTrigger?.kill();
+        tl.kill();
+        gsap.set([logoRef.current, headerRef.current, videoBgRef.current], {
+          clearProps: "all",
+        });
+      };
+    };
+
+    const setupReduced = () => {
+      gsap.set(logoRef.current, { width: "150px", height: "80px" });
+      gsap.set(headerRef.current, {
+        height: "100px",
+        top: 0,
+        left: 0,
+        right: 0,
+        margin: "0 auto",
+      });
+      gsap.set(videoBgRef.current, {
+        height: "100px",
+        filter: "brightness(0) blur(0px)",
+      });
+      setCompactNavVisible(true);
+
+      return () => {
+        gsap.set([logoRef.current, headerRef.current, videoBgRef.current], {
+          clearProps: "all",
+        });
+      };
+    };
+
+    let disposeSetup = reduceMotion.matches
+      ? setupReduced()
+      : setupAnimated();
+
+    const handleMotionPreferenceChange = () => {
+      disposeSetup();
+      disposeSetup = reduceMotion.matches ? setupReduced() : setupAnimated();
+    };
+
+    reduceMotion.addEventListener("change", handleMotionPreferenceChange);
 
     return () => {
       nav?.removeEventListener("focusout", handleNavFocusOut);
-      tl.scrollTrigger?.kill();
-      tl.kill();
+      reduceMotion.removeEventListener("change", handleMotionPreferenceChange);
+      disposeSetup();
     };
   }, []);
 
@@ -138,22 +183,22 @@ const Header = () => {
         aria-hidden="true"
         aria-label="Navegación principal"
         inert
-        className="invisible pointer-events-none absolute right-3 top-1/2 flex -translate-y-1/2 flex-col gap-1 text-[10px] font-semibold text-white sm:right-6 sm:flex-row sm:gap-4 sm:text-sm"
+        className="invisible pointer-events-none absolute right-3 top-1/2 flex -translate-y-1/2 flex-col gap-2 text-[10px] font-semibold text-white sm:right-6 sm:flex-row sm:gap-4 sm:text-sm"
       >
         <a
-          className="rounded px-1 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-200"
+          className="inline-flex min-h-11 items-center justify-center rounded px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-200"
           href="#personajes"
         >
           Personajes
         </a>
         <a
-          className="rounded px-1 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-200"
+          className="inline-flex min-h-11 items-center justify-center rounded px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-200"
           href="#temporadas"
         >
           Temporadas
         </a>
         <a
-          className="rounded px-1 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-200"
+          className="inline-flex min-h-11 items-center justify-center rounded px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-200"
           href="#libros"
         >
           Libros

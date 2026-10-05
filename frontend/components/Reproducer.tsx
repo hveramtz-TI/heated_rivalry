@@ -60,11 +60,7 @@ const Reproducer = () => {
 
   return (
     <div
-      className="fixed z-200 flex flex-col items-center justify-center gap-2"
-      style={{
-        bottom: "calc(env(safe-area-inset-bottom, 0px) + 1.5rem)",
-        right: "calc(env(safe-area-inset-right, 0px) + 1.5rem)",
-      }}
+      className="fixed z-200 flex flex-col items-center justify-center gap-2 bottom-[calc(env(safe-area-inset-bottom,0px)+1.5rem)] right-[calc(env(safe-area-inset-right,0px)+1.5rem)]"
     >
       <p
         role="status"
