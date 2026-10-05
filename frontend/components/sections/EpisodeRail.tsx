@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState, type RefObject } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type RefObject,
+} from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import type { Season } from "@/types/content";
 import { getPrefersReducedMotion } from "@/lib/motion";
@@ -21,6 +27,11 @@ const BOUNDARY_TOLERANCE_PX = 1;
 const CONTROL_CLASSES =
   "inline-flex h-11 w-11 touch-manipulation items-center justify-center rounded-full border border-white/30 bg-white/5 text-white transition-colors hover:bg-white/15 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40";
 
+/** Hydration gate: server snapshot keeps measured attrs stable through hydration. */
+const emptySubscribe = () => () => {};
+const getHydratedSnapshot = () => true;
+const getServerHydratedSnapshot = () => false;
+
 /**
  * Native-overflow episode rail (design D5). Scrolling stays browser-native —
  * GSAP never owns `scrollLeft` and there is no pin/`containerAnimation`/wheel
@@ -35,6 +46,14 @@ export default function EpisodeRail({
   const rowRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(true);
+
+  // The mount measurement can settle before React finishes hydrating the page;
+  // gating on this snapshot keeps the SSR `disabled` attrs stable until then.
+  const hydrated = useSyncExternalStore(
+    emptySubscribe,
+    getHydratedSnapshot,
+    getServerHydratedSnapshot,
+  );
 
   const episodes = season?.episodes ?? [];
   const isEmpty = episodes.length === 0;
@@ -104,7 +123,7 @@ export default function EpisodeRail({
         <button
           type="button"
           aria-label="Episodios anteriores"
-          disabled={atStart}
+          disabled={!hydrated || atStart}
           onClick={() => scrollByCards(-1)}
           className={CONTROL_CLASSES}
         >
@@ -113,7 +132,7 @@ export default function EpisodeRail({
         <button
           type="button"
           aria-label="Episodios siguientes"
-          disabled={atEnd}
+          disabled={!hydrated || atEnd}
           onClick={() => scrollByCards(1)}
           className={CONTROL_CLASSES}
         >
