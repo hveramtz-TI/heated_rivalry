@@ -8,11 +8,11 @@
     "accent": "rivalryRed",
     "shields": [
       {
-        "src": "https://static.wikia.nocookie.net/game-changers-series/images/f/f9/Montreal_Metros_Logo.png/revision/latest?cb=20260102102951",
+        "src": "/shields/montreal-metros.webp",
         "alt": "Escudo del Montreal Metros"
       },
       {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Flag_of_Canada_%28Pantone%29.svg",
+        "src": "/shields/flag-canada.webp",
         "alt": "Bandera de Canadá"
       }
     ]
@@ -26,14 +26,31 @@
     "accent": "electricBlue",
     "shields": [
       {
-        "src": "https://static.wikia.nocookie.net/game-changers-series/images/a/a1/Boston_Raiders_Logo.png/revision/latest?cb=20260102134316",
+        "src": "/shields/boston-raiders.webp",
         "alt": "Escudo del Boston Raiders"
       },
       {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Flag_of_Russia.svg",
+        "src": "/shields/flag-russia.webp",
         "alt": "Bandera de Rusia"
       }
     ]
   },
-  { "id": "hunter", "name": "Hunter" }
+  {
+    "id": "hunter",
+    "name": "Hunter",
+    "bio": "Scott Hunter es el capitán y estrella de los New York Admirals, reconocido por su liderazgo, talento y fuerte sentido de la responsabilidad dentro y fuera de la pista. Como centro y figura destacada del equipo, es respetado por sus compañeros y admirado por los aficionados. Su carácter reservado contrasta con la presión de ser una figura clave del hockey profesional. A lo largo de su historia, Hunter aprende a enfrentar sus miedos y a vivir de manera más auténtica, y se convierte en un referente para la inclusión en el deporte.",
+    "portrait": "/hunter.webp",
+    "cardArt": "/hunter.webp",
+    "accent": "electricBlue",
+    "shields": [
+      {
+        "src": "/shields/new-york-admirals.webp",
+        "alt": "Escudo de los New York Admirals"
+      },
+      {
+        "src": "/shields/flag-us.webp",
+        "alt": "Bandera de Estados Unidos"
+      }
+    ]
+  }
 ]
