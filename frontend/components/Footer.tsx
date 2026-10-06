@@ -21,7 +21,7 @@ export default function Footer() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-4">
               <Image
-                src="/logo.png"
+                src="/logo.webp"
                 alt="Logo Heated Rivalry"
                 width={64}
                 height={64}

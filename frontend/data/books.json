@@ -1,1 +1,86 @@
-[]
+[
+  {
+    "id": "book-game-changer",
+    "title": "Game Changer",
+    "cover": "/images/books/game-changer.webp",
+    "description": "Scott Hunter, capitán de los New York Admirals, comienza una relación secreta con Kip Grady, un joven que trabaja en una cafetería. Mientras Scott intenta proteger su carrera y su imagen pública, ambos deberán decidir qué lugar quieren darle a su relación.",
+    "published": "2018-10-22",
+    "pages": 400,
+    "purchaseUrls": [
+      {
+        "provider": "Mercado Libre",
+        "url": "https://meli.la/1iYhWP6"
+      }
+    ]
+  },
+  {
+    "id": "book-heated-rivalry",
+    "title": "Heated Rivalry",
+    "cover": "/images/books/heated-rivalry.webp",
+    "description": "Shane Hollander e Ilya Rozanov son estrellas del hockey y rivales dentro de la pista. Fuera de ella mantienen una relación que deben mantener en secreto mientras enfrentan las consecuencias de combinar su vida personal con sus carreras profesionales.",
+    "published": "2019-03-25",
+    "pages": 411,
+    "purchaseUrls": [
+      {
+        "provider": "Mercado Libre",
+        "url": "https://meli.la/14m9Fvp"
+      }
+    ]
+  },
+  {
+    "id": "book-tough-guy",
+    "title": "Tough Guy",
+    "cover": "/images/books/tough-guy.webp",
+    "description": "Ryan Price, jugador de hockey conocido por su dureza sobre el hielo, intenta comenzar una nueva etapa en Toronto. Allí vuelve a encontrarse con Fabian Salah, un músico que conoció años atrás y con quien todavía existe una conexión especial.",
+    "published": "2020-01-13",
+    "pages": 304,
+    "purchaseUrls": [
+      {
+        "provider": "Mercado Libre",
+        "url": "https://meli.la/2WKW4NE"
+      }
+    ]
+  },
+  {
+    "id": "book-common-goal",
+    "title": "Common Goal",
+    "cover": "/images/books/common-goal.webp",
+    "description": "Eric Bennett, un veterano portero de hockey que atraviesa una nueva etapa de su vida, conoce a Kyle Swift, un estudiante de posgrado. Lo que comienza como una relación sin compromiso evoluciona hacia sentimientos que ninguno de los dos esperaba.",
+    "published": "2020-09-21",
+    "pages": 320,
+    "purchaseUrls": [
+      {
+        "provider": "Mercado Libre",
+        "url": "https://meli.la/2Pd1ikM"
+      }
+    ]
+  },
+  {
+    "id": "book-role-model",
+    "title": "Role Model",
+    "cover": "/images/books/role-model.webp",
+    "description": "Troy Barrett llega a un nuevo equipo después de una etapa complicada de su carrera. Allí debe trabajar con Harris Drover, el encargado de sus redes sociales. La relación entre ambos ayuda a Troy a enfrentarse a sus prejuicios, su pasado y la posibilidad de mostrarse tal como es.",
+    "published": "2021-08-10",
+    "pages": 384,
+    "purchaseUrls": [
+      {
+        "provider": "Mercado Libre",
+        "url": "https://meli.la/2qFXn1g"
+      }
+    ]
+  },
+  {
+    "id": "book-the-long-game",
+    "title": "The Long Game",
+    "cover": "/images/books/the-long-game.webp",
+    "description": "Shane Hollander e Ilya Rozanov llevan años manteniendo su relación en secreto. Cuando Ilya empieza a querer una vida más abierta y Shane teme las consecuencias para su carrera, ambos deben decidir qué están dispuestos a arriesgar por su futuro juntos.",
+    "published": "2022-04-26",
+    "pages": 496,
+    "purchaseUrls": [
+      {
+        "provider": "Mercado Libre",
+        "url": "https://meli.la/2oUVFd5"
+      }
+    ]
+  }
+]

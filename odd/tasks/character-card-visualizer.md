@@ -62,7 +62,7 @@ The user approved proceeding from the reference-derived design document to imple
 - Independent read-only verification: PASS WITH NOTES; no candidate-caused blocker or should-fix finding. Browser visual and runtime image-loading checks were not run.
 - `gentle-ai review assess` returned high/unassessable because pre-existing untracked files were undeclared. RDD is globally off, so no review lifecycle or consent was started; the independent technical verifier covered the high verification tier.
 - Work-unit commit: `b977e00ff0645c90057df062d2ac7ac585ac9180` (`feat(characters): restore collectible slab cards`).
-- Design source: `CHARACTER-CARDS-DESIGN.md`; reference image: `frontend/public/referenciaCard.jpg`.
+- Design source: `CHARACTER-CARDS-DESIGN.md`; reference image: `frontend/public/referenciaCard.webp`.
 
 ## Next Step
 Visual-check the roster in the browser when available. RDD remains globally off; no review receipt or approval is claimed.

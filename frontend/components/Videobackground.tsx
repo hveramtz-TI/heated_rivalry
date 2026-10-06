@@ -33,7 +33,7 @@ const VideoBackground = () => {
         muted
         playsInline
         preload="metadata"
-        poster="/episodeSectionBg.jpg"
+        poster="/episodeSectionBg.webp"
         className="w-full h-full object-cover"
       >
         <source src="/H2.mp4" type="video/mp4" />

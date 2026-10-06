@@ -1,6 +1,6 @@
 # Character Card Visualizer — Design Spec
 
-Reference: `frontend/public/referenciaCard.jpg` (graded PSA slab of the 1998 Pokémon "Illustrator – Holo" promo).
+Reference: `frontend/public/referenciaCard.webp` (graded PSA slab of the 1998 Pokémon "Illustrator – Holo" promo).
 
 This document translates the anatomy of that graded slab into a Heated Rivalry collectible-card viewer for the three roster entries in `frontend/data/characters.json`. It complements `DESIGN.md`; where the two differ for this component, this spec wins. It revives the conventions of the earlier `character-cards-slab` iteration (fictional deterministic chrome, shields overlay, site identity only) on top of the current simplified architecture: plain server components, Tailwind only, no GSAP/tilt layer.
 
@@ -10,7 +10,7 @@ This document translates the anatomy of that graded slab into a Heated Rivalry c
 2. Feed it strictly from `Character` data (`name`, `bio`, `cardArt`, `portrait`, `accent`, `shields`); `CharactersSection.tsx` keeps its current grid and passes the roster index for the deterministic ordinal.
 3. Verify against the Acceptance checklist: build passes, lint stays at the known baseline, Hunter's missing-data state renders cleanly.
 
-## Reference anatomy (what to keep from `referenciaCard.jpg`)
+## Reference anatomy (what to keep from `referenciaCard.webp`)
 
 Five stacked zones, front to back:
 

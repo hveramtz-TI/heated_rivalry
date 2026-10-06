@@ -1,18 +1,16 @@
 import booksData from "@/data/books.json";
-import booksExampleData from "@/data/books.example.json";
 import type { Book } from "@/types/books";
 import BookCard from "@/components/cards/BookCard";
 import { MISSING_CONTENT_LABEL } from "@/data/ui";
 
 const books = booksData as Book[];
-const exampleBooks = booksExampleData as Book[];
-const displayBooks = books.length > 0 ? books : exampleBooks;
+const displayBooks = books.length > 0 ? books : [];
 
 const BooksSection = () => {
   return (
     <section
       id="libros"
-      className="relative isolate w-full scroll-mt-24 bg-[url('/bookSectionbg.jpg')] bg-cover bg-center px-6 py-16 md:px-8"
+      className="relative isolate w-full scroll-mt-24 bg-[url('/bookSectionbg.webp')] bg-cover bg-center px-6 py-16 md:px-8"
     >
       <div
         aria-hidden="true"
