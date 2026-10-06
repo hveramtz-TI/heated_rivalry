@@ -16,7 +16,7 @@ const Shield = ({ imageSrc, alt = "Shield", className }: Props) => {
           alt={alt}
           width={100}
           height={100}
-          className="w-16 h-16"
+          className="object-contain"
         />
       </div>
     </div>
