@@ -5,42 +5,42 @@
     "episodes": [
       {
         "id": "season-1-episode-1",
-        "image": "/1.webp",
+        "artwork": "/1.webp",
         "number": 1,
         "title": "Novatos",
         "synopsis": "Las estrellas del hockey Shane Hollander e Ilya Rozanov caminan sobre la delgada capa de hielo que separa su rivalidad de algo mucho más íntimo."
       },
       {
         "id": "season-1-episode-2",
-        "image": "/2.webp",
+        "artwork": "/2.webp",
         "number": 2,
         "title": "Olímpicos",
         "synopsis": "Shane e Ilya mantienen su relación secreta, al tiempo que su vínculo es puesto a prueba por presiones personales y profesionales."
       },
       {
         "id": "season-1-episode-3",
-        "image": "/3.webp",
+        "artwork": "/3.webp",
         "number": 3,
         "title": "Hunter",
         "synopsis": "La arriesgada carrera de un jugador de hockey choca con el amor cuando un encuentro casual enciende una chispa."
       },
       {
         "id": "season-1-episode-4",
-        "image": "/4.webp",
+        "artwork": "/4.webp",
         "number": 4,
         "title": "Rose",
         "synopsis": "Un momento de vulnerabilidad inesperada y un romance de alto perfil desatan una tormenta de problemas para Shane e Ilya."
       },
       {
         "id": "season-1-episode-5",
-        "image": "/5.webp",
+        "artwork": "/5.webp",
         "number": 5,
         "title": "Creeré en Cualquier Cosa",
         "synopsis": "Shane, Ilya y Scott se enfrentan a decisiones personales cruciales."
       },
       {
         "id": "season-1-episode-6",
-        "image": "/6.webp",
+        "artwork": "/6.webp",
         "number": 6,
         "title": "La Cabaña",
         "synopsis": "Shane e Ilya se alejan de los focos por un breve momento de libertad, pero pronto deben tomar decisiones que podrían cambiarlo todo."
