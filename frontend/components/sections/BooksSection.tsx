@@ -1,12 +1,10 @@
 import booksData from "@/data/books.json";
-import booksExampleData from "@/data/books.example.json";
 import type { Book } from "@/types/books";
 import BookCard from "@/components/cards/BookCard";
 import { MISSING_CONTENT_LABEL } from "@/data/ui";
 
 const books = booksData as Book[];
-const exampleBooks = booksExampleData as Book[];
-const displayBooks = books.length > 0 ? books : exampleBooks;
+const displayBooks = books.length > 0 ? books : [];
 
 const BooksSection = () => {
   return (
