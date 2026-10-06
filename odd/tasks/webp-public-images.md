@@ -3,82 +3,94 @@
 Feature: `webp-public-images` · Branch: `feat/webp-public-images` · Created: 2026-10-05
 
 ## Objective
-Convert every raster image in `frontend/public/` to WebP and update references to those local assets.
+Convert every raster image the frontend serves to WebP, keep every reference resolving, and fix the rendering faults that surfaced while verifying the conversion.
 
 ## Problem / Why
-The public asset directory contains JPEG and PNG files, and application references still use those extensions. WebP assets reduce image payload size while preserving the existing content and visual roles.
+`frontend/public/` held JPEG and PNG files with references using those extensions. WebP cuts the payload while keeping the same content and visual role. Verification then exposed three real faults: episode stills never rendered, the hero logo stalled, and the character cards read uneven because their bios were different lengths.
 
 ## Scope
-- **In:** Raster image files currently in `frontend/public/`; application references to those local images; season episode paths when they map directly to the six numbered episode images.
-- **Out:** `H2.mp4`, `soundtrack.mp3`, remote image URLs, unrelated catalog copy, and references to image files that do not exist in `frontend/public/`.
+- **In:** raster images in `frontend/public/`, the references to them in components and `frontend/data/`, character shield assets, book purchase links, and the character bio wording.
+- **Out:** `H2.mp4`, `soundtrack.mp3`, catalog copy the user owns, and delivery decisions (commit, push, PR stay with the user).
 
 ## Constraints
-- Preserve source image dimensions, transparency, and recognizable quality.
-- Retain each existing basename when converting; use `.webp` as the output extension.
-- Do not remove or rewrite the unrelated in-progress catalog content in `frontend/data/{books,characters,seasons}.json`.
-- Update paths only when they can be matched to a real converted public asset; do not invent missing book cover artwork or mappings.
-- The repository has no declared frontend test or typecheck script; use asset/reference assertions and the production build.
+- Preserve dimensions, transparency, and recognizable quality; keep each basename and use `.webp`.
+- Never invent an artwork mapping for a reference with no matching file.
+- Keep the user's in-progress catalog content out of the asset commits.
+- No comments in code, Tailwind classes only, no inline styles (repository hard rules).
+- No declared frontend test or typecheck script: verify through asset/reference assertions, the production build, and a live server.
 
 ## Tasks
 - [x] T1 — Convert local raster assets, update verified references, and validate the build.
 - [x] T2 — Localize the character shields as WebP after the remote hosts proved unusable.
 - [x] T3 — Add the six Mercado Libre purchase links to the book catalog in file order.
+- [x] T4 — Fix the episode artwork key mismatch that kept every episode on its placeholder.
+- [x] T5 — Diagnose the hanging header logo and re-encode the logo asset.
+- [x] T6 — Normalize the character bios so the three cards read at the same height.
+- [x] T7 — Remove the unreferenced image assets left in `frontend/public/`.
+- [x] T8 — Drop the dead cover references from the books example fallback.
+- [x] T9 — Delete the unused `images.domains` block from the Next config.
 
 ## Route and delivery
-- **Route:** delegated direct; the conversion spans multiple assets and application references.
-- **Trigger evidence:** eighteen local image assets and references in JSON and components require coordinated updates.
-- **TDD:** no meaningful runnable RED exists for a static asset conversion; verify output formats, reference resolution, and the frontend production build.
-- **Delivery strategy:** `ask-on-risk` (default); estimated authored source changes are under 400 lines, excluding converted binary assets, so no chain strategy is needed.
-- **RDD:** global mode was `off` at task start; keep review disabled and follow ordinary repository policy.
+- **Route:** delegated direct; eighteen assets plus references in JSON and components required coordinated updates (writer trigger fired).
+- **TDD:** a static asset conversion has no meaningful runnable RED, so each task closes on format/reference assertions plus build and live-server evidence instead.
+- **Delivery strategy:** `ask-on-risk`; authored source diff stays well under the 400-line budget, binaries excluded, so no chain strategy applies.
+- **RDD:** global mode `off` throughout; no review lifecycle started. Native assess returned `unassessable` (untracked inventory needed) and was treated as high.
 
-## Acceptance criteria
-- Every raster image in `frontend/public/` is represented by a valid WebP file, and no original JPEG/PNG remains there.
-- Existing code references to those local images use `.webp` and resolve to files.
-- The six numbered episode images are referenced in order by the six existing episode entries.
-- Video, audio, remote assets, and unrelated catalog content remain unchanged.
-- `npm run build` succeeds; any lint failure is recorded honestly.
+## T1 — Conversion evidence
+- 18 root assets converted, originals removed, `npm run build`/`npm run lint`/`git diff --check` passing.
+- WebP signatures and dimensions verified for 18/18, alpha preserved for 3/3 PNG sources. `referenciaCard.jpg` was already WebP data under a wrong extension and was renamed with bytes preserved; `hunter.png` was JPEG data and was converted from content, not extension.
+- `hollanderCard.webp` was re-encoded from the versioned JPEG blob because the first encode came out larger than its source (425 → 503 KiB); final 350 KiB at 1080x1920.
+- Payload on the versioned originals: 8.36 MiB → 3.03 MiB (63.8% smaller).
+- `frontend/data/seasons.json` episode images map in order to `/1.webp`–`/6.webp`.
+- Commits: `abbd24a` (root conversions and references).
 
-## Checks
-- Run from `frontend/`: `npm run build`
-- Run from `frontend/`: `npm run lint`
-- Inspect local image file signatures and ensure all local asset references to converted images resolve.
-- Confirm the dirty catalog changes that predate this task remain intact except for authorized image-path updates.
+## T2 — Local shields (user chose option A)
+- Six WebP badges in `frontend/public/shields/`: `montreal-metros`, `boston-raiders`, `new-york-admirals`, `flag-canada`, `flag-russia`, `flag-us`; 23.7 KiB total against ~199 KiB for the three remote logos alone, sized at 160 px because the cards display 32 px.
+- Fandom assets only download when the request carries a browser User-Agent **and** a wiki `Referer`; without it every request 403s, which is what made the CDN look dead. This was pre-existing: the Metros and Raiders URLs in `HEAD` failed identically.
+- Flags are vector SVGs, rasterized with `rsvg-convert` at 160 px before WebP encoding. Wikimedia `/thumb/...png` URLs return HTTP 400 here; the raw `.svg` works. SVG sources also hit the optimizer gate "image type is not allowed", which needs `images.dangerouslyAllowSVG` plus a CSP.
+- Render quality measured, not assumed: US canton is navy with white star pixels and alternating red/white stripes; Russia samples white/blue/red top to bottom.
+- Earlier `characters.json` used the wiki *page* URL `https://game-changers-series.fandom.com/wiki/New_York_Admirals` as an image src on an unconfigured host, which threw `Invalid src prop ... hostname ... is not configured`; the real file URL came from the wiki MediaWiki API.
+- Commit: `3297e20`.
 
-## Progress / Evidence
-- T1 complete: all 18 local raster assets now have WebP files, and the original JPEG/PNG files were removed. The existing disguised WebP (`referenciaCard.jpg`) was renamed without recompression.
-- Image validation confirmed WebP signatures and matching dimensions for 18/18 assets, alpha preservation for 3/3 PNG sources, and exact byte preservation for `referenciaCard.webp`.
-- Updated references to assets that exist. The six episode entries now point in order to `/1.webp`–`/6.webp`; component and character paths for existing local assets resolve.
-- `npm run build` passed; Next emitted only the existing `images.domains` deprecation warning. `npm run lint` passed. `git diff --check` passed.
-- Existing missing references remain unchanged: the `/images/books/*.jpg` cover paths and the user-added `/hunterCard.jpg` had no corresponding assets in `frontend/public/`; no artwork mapping was guessed.
-- Native risk assessment returned `unassessable` because untracked files need an explicit inventory declaration; treated as high. Writer self-checks and independent verification completed. RDD remains OFF.
-- Work-unit commit: `abbd24a perf(assets): serve public images as webp` on `feat/webp-public-images`. Staging excluded the user's in-progress catalog content in `books.json` and the Hunter character block in `characters.json`.
-- Post-review correction before freeze: `hollanderCard.webp` was re-encoded from the versioned JPEG blob (quality 82, method 6) because the first encode came out larger than its source (425 KiB -> 503 KiB); final size 350 KiB at the same 1080x1920.
-- Payload measured on the versioned originals: 8.36 MiB of JPEG/PNG -> 3.03 MiB of WebP (63.8% smaller). `referenciaCard` kept its original bytes as a rename only.
-- A `game-changer.jpg` (1594x2400, 224 KiB) appeared in `frontend/public/` during the run; converted to `frontend/public/images/books/game-changer.webp` (100 KiB, 55% smaller) — the directory `books.json` already expects — and that one cover reference now points to `.webp`.
+## T3 — Purchase links
+- `frontend/data/books.json` carries one `Mercado Libre` `RetailerLink` per book, assigned in file order: `game-changer` → `meli.la/1iYhWP6`, `heated-rivalry` → `meli.la/14m9Fvp`, `tough-guy` → `meli.la/2WKW4NE`, `common-goal` → `meli.la/2Pd1ikM`, `role-model` → `meli.la/2qFXn1g`, `the-long-game` → `meli.la/2oUVFd5`.
+- Six covers dropped into `frontend/public/images/books/` during the run were converted to WebP (224 KiB → 100 KiB for `game-changer`, the rest ~103–188 KiB) and their `cover` paths now end in `.webp`.
+- Commit: `1676ea7`.
 
-## Follow-ups detected (not part of this task, evidence recorded)
-- Remote team shields do not render: `static.wikia.nocookie.net` returns HTTP 403 both through the Next image optimizer and from a direct request with a browser user-agent. This is pre-existing — the `Montreal_Metros_Logo.png` and `Boston_Raiders_Logo.png` URLs already in `HEAD` fail identically, so Hollander and Rozanov shields were already broken.
-- Remote flag shields are rejected by the optimizer with "image type is not allowed" (`image/svg+xml` needs `images.dangerouslyAllowSVG` plus a CSP); also pre-existing for the Canada and Russia flags in `HEAD`.
-- `characters.json` line 47 pointed at the wiki *page* `https://game-changers-series.fandom.com/wiki/New_York_Admirals`, not an image, and that hostname is not in `next.config.ts` `images.domains`. That raised the runtime error `Invalid src prop ... hostname "game-changers-series.fandom.com" is not configured`. The real file URL was taken from the wiki MediaWiki API (`api.php?action=query&list=allimages&aiprefix=New%20York%20Admirals`).
-- The three UUID-named images in `frontend/public/` (3880x2400, 1159x1545, 1032x1548) are converted but referenced by nothing; their intended role is unknown.
+## T4 — Episode artwork key mismatch
+- Symptom: every episode card showed the decorative number placeholder and `/_next/image` never asked for `/1.webp`–`/6.webp`.
+- Root cause: the contract is `Episode.artwork` (`frontend/types/seasons.ts:7`, read at `frontend/components/cards/EpisodeCard.tsx:60`) but `frontend/data/seasons.json` used the key `image`. Nothing rejects unknown keys — the sections cast JSON straight to the type — so the value was silently ignored.
+- Fix: renamed the six keys to `artwork`, order untouched, no component change.
 
-## T2 — Localize the character shields (user chose option A)
-- Six WebP shields now live in `frontend/public/shields/`: `montreal-metros`, `boston-raiders`, `new-york-admirals`, `flag-canada`, `flag-russia`, `flag-us`. 24.3 KB total (86 KB for the biggest remote original), sized at 160 px because the cards render them at 32 px.
-- The three team logos were already served as WebP by the CDN; they only download when the request carries a browser User-Agent **and** a `Referer` from the fandom wiki page. Without `Referer` every request returns HTTP 403, which is what made the images look unreachable earlier.
-- The three flags are vector SVGs, so they were rasterized with `rsvg-convert` at 160 px before encoding to WebP. Wikimedia thumbnail URLs (`/thumb/.../320px-...png`) return HTTP 400 here; the raw `.svg` path works.
-- Render quality was checked, not assumed: the US canton mean color is navy and contains white star pixels, and the stripe rows alternate red/white; the Russia bands sample white/blue/red top to bottom.
-- `characters.json` now uses the six local paths; no `next/image` src points at a remote host any more, the optimizer returns 200 for all six, and the page renders with zero `Invalid src prop` and zero `Runtime Error`.
-- Dead configuration left untouched on purpose: `frontend/next.config.ts` still declares `images.domains` for `static.wikia.nocookie.net` and `upload.wikimedia.org` with no remaining consumer, and Next 16.3.6 deprecates `domains` in favour of `remotePatterns`.
+## T5 — Header logo stall
+- Symptom: the hero logo never painted while the footer logo, asking `w=64`/`w=128`, was fine.
+- Evidence: `logo.webp` was identical to the source PNG (`magick compare -metric AE` → 0 differing pixels, same 24,926 unique colors, same mean). It answered `w=128/640/828/1920` in milliseconds; `w=1080`, exactly its intrinsic width and exactly the header's 2x candidate, timed out repeatedly, while other WebP files answered `w=1080` normally.
+- Decisive control: a byte-identical copy under another filename answered `w=1080` in 83 ms on the same running dev server, and the original PNG answered it in 75 ms. The file was healthy; the stall lived in the dev server's in-memory optimizer cache, poisoned by the first request against the lossless encode.
+- Fix: re-encoded the logo lossy at q90 (200 KB → 85 KB, RMSE 0.4%, alpha kept), commit `2d3c058`. After the dev server restarted, `w=1080` answers in 11 ms.
+- The proposal to move every image to JPG was rejected on evidence: two of the three faults were a key mismatch and a cache entry, no WebP file was corrupt, and JPEG carries no alpha, which the logo and both portraits need.
 
-## T3 — Book purchase links
-- `frontend/data/books.json` carries one `Mercado Libre` entry per book, assigned in file order: `game-changer` → `meli.la/1iYhWP6`, `heated-rivalry` → `meli.la/14m9Fvp`, `tough-guy` → `meli.la/2WKW4NE`, `common-goal` → `meli.la/2Pd1ikM`, `role-model` → `meli.la/2qFXn1g`, `the-long-game` → `meli.la/2oUVFd5`.
-- Verified in rendered HTML: six `Comprar en Mercado Libre` anchors, each with `target="_blank"` and `rel="noopener noreferrer"`, matching the existing `RetailerLink` shape in `frontend/types/books.ts`.
+## T6 — Uniform bios
+- Before: Hollander 536, Rozanov 511, Hunter 732 characters (spread 221).
+- Hunter trimmed to 533 characters in four sentences, matching the shape of the other two (spread now 25). Wording was cut, not invented: leadership, centre role, reserved character, authenticity, and inclusion all stayed.
 
-## Runtime verification
-- Live `next dev` on port 3000 (the user's own server): `GET /` returns 200, the Admirals logo URL appears in the HTML, `Invalid src prop` and `Runtime Error` counts are 0.
-- All six `/shields/*.webp` paths return 200 both directly and through `/_next/image`.
-- `GET /images/books/game-changer.webp` returns 200, and `/_next/image?url=%2Fimages%2Fbooks%2Fgame-changer.webp` returns 200.
-- Remaining references audited rather than guessed: Hunter's `cardArt` now reads `/hunter.webp` (the earlier `/hunterCard.jpg` value no longer exists in the file, and no such file ever existed in `public/`), so no character path dangles. The `books.example.json` placeholder covers still point to `/images/books/ejemplo-portada-*.jpg`, which never existed and is only reachable through the `BookCard` `onError` fallback while `books.json` stays empty.
+## T7/T8/T9 — Cleanup evidence
+- T7: the three UUID-named files (`44ab2a59-…(1).webp`, `…(1)(1)(1).webp`, `…(1)(1)(2).webp`) had **zero** mentions anywhere in the repository, so they were removed. `referenciaCard.webp` was **kept**: the sweep said "unreferenced by code", but `CHARACTER-CARDS-DESIGN.md` cites it as the visual reference for the slab cards, and `odd/tasks/character-card-visualizer.md` points at it too. Both documents still named the old `.jpg`, so their pointers were corrected to `.webp` instead of deleting a documented reference.
+- T8: the two `cover` keys in `frontend/data/books.example.json` pointed at `/images/books/ejemplo-portada-*.jpg`, files that never existed. They were removed so the example books take `BookCard`'s designed `cover === undefined` placeholder branch. The example file itself stays because `BooksSection` imports it for the empty-catalog fallback.
+- T9: `frontend/next.config.ts` declared `images.domains` for `static.wikia.nocookie.net` and `upload.wikimedia.org`. After the shields went local, a repository-wide search found no remaining remote image `src`, so the block was deleted. Evidence it worked: the build no longer prints the `images.domains` deprecation warning.
+- Final integrity sweep: broken references **ninguno**, unreferenced assets only `referenciaCard.webp` (intentional, documented), 29 files left in `frontend/public/`.
+
+## Verification
+- `npm run build` and `npm run lint` pass; `git diff --check` clean.
+- Production server on port 3211: `/_next/image?url=%2Flogo.webp&w=1080` → 200 in 127 ms; each of the six artworks appeared 16 times in rendered HTML and every `N.webp` returned 200.
+- Dev server on port 3000 after restart: logo `w=1080` → 200 in 11 ms; `url=%2F[1-6].webp` all present; zero number placeholders; zero `Runtime Error` and zero `Invalid src prop`; all six `/shields/*.webp` and all covers return 200.
+- Final production run on port 3222 after T7–T9: `/` 200, logo `w=1080` 200, episodes 1/3/6 artwork 200, `/shields/new-york-admirals.webp`, `/shields/flag-us.webp` and `/images/books/the-long-game.webp` 200; rendered HTML carries 6 artworks, 6 shields, 6 covers and 0 runtime errors. The build no longer emits the `images.domains` deprecation warning.
+- No browser was opened: evidence is HTTP responses plus rendered markup, so final visual polish still needs the user's eyes.
+
+## Open items
+- `referenciaCard.webp` is the only file in `frontend/public/` no code references; it is kept on purpose as the design citation in `CHARACTER-CARDS-DESIGN.md`.
+- `frontend/data/books.example.json` still powers the empty-catalog fallback, but with six books in `books.json` that branch is unreachable today.
+- Hunter has no dedicated card artwork: his `cardArt` reuses `/hunter.webp`, unlike Hollander and Rozanov, who each have a separate `*Card.webp`.
+- Incident worth remembering: a `pkill -f 'next-server'` cleanup matched the user's own dev server (PID 11885) and killed it. Cleanup must target only the PID the session started, resolved from the listening socket.
 
 ## Next Step
-Commit `frontend/data/characters.json` and `frontend/data/books.json` once the user is happy with the catalog content, and decide separately whether to drop the now-unused `images.domains` block from `frontend/next.config.ts`.
+Delivery is the user's call: the branch holds every fix. Remaining work is content-side — Hunter's card art, a browser visual pass, and whether to retire the unreachable `books.example.json` fallback.
